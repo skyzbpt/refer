@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個案轉介紹回饋方案｜合一療癒</title>
+<meta name="description" content="推薦好友來合一療癒，每位獲得 500 點紅利；好友享免費健康諮詢與健康講座。">
+
+<!-- ============================================================
+  ✏️ 快速編輯指南（給站主）
+  1. 紅利點數（每位 500 點／1,500 點兌換／×1.25）：搜尋「✏️ 回饋內容」「✏️ 兌換方式」
+  2. 級距加碼（3／5／10 位與加贈點數）：搜尋「✏️ 級距」
+  3. 表單服務選項：搜尋「✏️ 服務選項」
+  4. 聯絡資訊（Instagram）：搜尋「✏️ 聯絡資訊」
+  5. EmailJS 設定：搜尋「✏️ EMAILJS_CONFIG」
+     （未設定時，表單會顯示「複製登記內容」備援面板，不會跳離頁面）
+  6. 主題色：搜尋「:root」即可一次調整整體配色
+============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   淺藍療癒・水系主題
+============================================================ */
+:root{
+  --surface:#E9F3F9;       /* 水面：頁面底色 */
+  --surface-top:#F4FAFD;   /* 漸層上緣 */
+  --band:#F2F8FC;          /* 淺色區塊帶 */
+  --card:#FFFFFF;          /* 卡片 */
+  --aqua-pale:#DCEEF7;     /* 極淺水藍 */
+  --aqua-soft:#C6E4F1;
+  --blue:#4A93C2;          /* 湖藍：主色 */
+  --blue-strong:#3C82B0;   /* 主色加深（hover） */
+  --deep:#22495F;          /* 深海藍：深色區塊、標題 */
+  --teal:#69B6BE;          /* 青綠：次要強調（好友／點綴） */
+  --teal-deep:#3E8C95;
+  --ink:#1F4150;           /* 主要文字 */
+  --muted:#5B8197;         /* 次要文字 */
+  --line:rgba(34,73,95,.14);
+  --shadow:0 12px 34px rgba(34,73,95,.10);
+  --shadow-sm:0 6px 18px rgba(34,73,95,.07);
+  --radius:20px;
+  --font-display:'LXGW WenKai TC','Noto Serif TC','PMingLiU',serif;
+  --font-body:'Noto Sans TC','Microsoft JhengHei',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  line-height:1.85;font-size:16px;
+  -webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(1200px 600px at 80% -5%, rgba(105,182,190,.16), transparent 60%),
+    linear-gradient(180deg, var(--surface-top) 0%, var(--surface) 38%, var(--surface) 100%);
+  background-attachment:fixed;
+  position:relative;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* 環境漂浮光暈（水中的光） */
+.ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.45}
+.blob-1{width:440px;height:440px;left:-120px;top:8%;
+  background:radial-gradient(circle, rgba(105,182,190,.55), transparent 70%);
+  animation:drift1 22s ease-in-out infinite}
+.blob-2{width:520px;height:520px;right:-160px;top:40%;
+  background:radial-gradient(circle, rgba(74,147,194,.40), transparent 70%);
+  animation:drift2 27s ease-in-out infinite}
+.blob-3{width:380px;height:380px;left:20%;bottom:-120px;
+  background:radial-gradient(circle, rgba(198,228,241,.7), transparent 70%);
+  animation:drift1 30s ease-in-out infinite reverse}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,30px)}}
+
+header,main,footer{position:relative;z-index:1}
+
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+.sec{padding:88px 0}
+.sec-tight{padding:64px 0}
+
+/* ---------- 文字層級 ---------- */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;letter-spacing:.22em;color:var(--blue);
+  font-weight:500;margin-bottom:14px;
+}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--teal)}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;line-height:1.45;letter-spacing:.03em;color:var(--deep)}
+h1{font-size:clamp(30px,5.4vw,48px)}
+h2{font-size:clamp(24px,3.6vw,34px)}
+.lead{color:var(--muted);max-width:560px;margin-top:14px}
+.center{text-align:center}
+.center .lead{margin-left:auto;margin-right:auto}
+
+/* ---------- 按鈕 ---------- */
+.btn{
+  display:inline-block;padding:13px 30px;border-radius:999px;
+  font-size:15px;font-weight:500;letter-spacing:.08em;
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+  cursor:pointer;border:1px solid transparent;font-family:var(--font-body);
+}
+.btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue-strong));color:#fff;box-shadow:0 8px 20px rgba(60,130,176,.28)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(60,130,176,.36)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:rgba(255,255,255,.7)}
+.btn-ghost:hover{background:#fff;border-color:var(--blue)}
+.btn-sm{padding:9px 20px;font-size:14px}
+
+/* ---------- 導覽列 ---------- */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(244,250,253,.82);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:.06em;cursor:pointer;background:none;border:none;padding:0;color:var(--deep)}
+.nav-links{display:flex;align-items:center;gap:26px;font-size:14.5px;color:var(--muted)}
+.link-btn{background:none;border:none;padding:0;font:inherit;letter-spacing:inherit;color:inherit;cursor:pointer}
+.link-btn:hover{color:var(--deep)}
+.link-btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:4px}
+.nav-cta{padding:9px 20px;font-size:14px}
+.nav-login{font-size:13.5px;padding:7px 16px;margin-left:4px}
+.nav-user{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted)}
+.nav-user .uname{color:var(--deep);font-weight:500;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-user .logout-btn{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:0;text-decoration:underline;text-underline-offset:2px}
+.nav-user .logout-btn:hover{color:var(--deep)}
+@media (max-width:760px){.nav-links .link-btn{display:none}}
+@media (max-width:600px){.nav-login{display:none}}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;padding:108px 0 124px;text-align:center}
+.hero-glow{
+  position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);
+  width:760px;height:760px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle, rgba(105,182,190,.30), rgba(74,147,194,.12) 45%, transparent 70%);
+  filter:blur(6px);
+}
+.ripples{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.ripples span{
+  position:absolute;border-radius:50%;border:1px solid rgba(74,147,194,.22);
+  width:300px;height:300px;animation:breathe 7s ease-in-out infinite;
+}
+.ripples span:nth-child(2){width:500px;height:500px;animation-delay:1s;border-color:rgba(74,147,194,.16)}
+.ripples span:nth-child(3){width:720px;height:720px;animation-delay:2s;border-color:rgba(105,182,190,.16)}
+.ripples span:nth-child(4){width:940px;height:940px;animation-delay:3s;border-color:rgba(105,182,190,.08)}
+@keyframes breathe{0%,100%{transform:scale(.97);opacity:.6}50%{transform:scale(1.04);opacity:1}}
+/* 水滴擴散環 */
+.emit{position:absolute;left:50%;top:46%;width:140px;height:140px;border-radius:50%;
+  border:1.5px solid rgba(74,147,194,.45);pointer-events:none;
+  transform:translate(-50%,-50%) scale(.2);animation:emit 6s ease-out infinite}
+.emit-2{animation-delay:3s;border-color:rgba(105,182,190,.45)}
+@keyframes emit{0%{transform:translate(-50%,-50%) scale(.2);opacity:.7}100%{transform:translate(-50%,-50%) scale(6.4);opacity:0}}
+
+.hero-inner{position:relative;max-width:680px;margin:0 auto;padding:0 22px}
+.mark{margin:0 auto 26px;width:80px}
+.hero .lead{margin:18px auto 34px;max-width:480px}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- 波浪分隔 ---------- */
+.wave{position:absolute;left:0;width:100%;height:58px;line-height:0;pointer-events:none;z-index:1}
+.wave svg{width:100%;height:100%;display:block}
+.wave-top{top:-1px}
+.wave-bottom{bottom:-1px;transform:scaleY(-1)}
+
+/* ---------- 方案說明：流程圖 ---------- */
+.flow{max-width:560px;margin:54px auto 0}
+.flow-node{
+  display:flex;align-items:center;gap:18px;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:20px 24px;box-shadow:var(--shadow-sm);
+}
+.flow-badge{
+  flex:0 0 auto;width:46px;height:46px;border-radius:50%;
+  background:var(--aqua-pale);border:1px solid var(--blue);
+  display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--blue-strong);
+}
+.flow-node h3{font-size:18px;margin-bottom:2px}
+.flow-node p{color:var(--muted);font-size:14.5px;line-height:1.65}
+.flow-link{position:relative;height:40px}
+.flow-link .stem{position:absolute;left:50%;top:0;bottom:0;width:1.6px;background:var(--line);transform:translateX(-50%)}
+.flow-link .chev{position:absolute;left:50%;bottom:0;width:9px;height:9px;border-right:1.6px solid var(--teal);border-bottom:1.6px solid var(--teal);transform:translate(-50%,1px) rotate(45deg)}
+.flow-link .tag{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:var(--surface);padding:3px 14px;border-radius:999px;
+  font-size:12.5px;color:var(--muted);border:1px solid var(--line);white-space:nowrap;
+}
+.fork{position:relative;height:42px}
+.fork .stem{position:absolute;left:50%;top:0;width:1.6px;height:21px;background:var(--line);transform:translateX(-50%)}
+.fork .bar{position:absolute;left:25%;right:25%;top:20px;height:1.6px;background:var(--line)}
+.fork .drop{position:absolute;top:20px;width:1.6px;height:22px;background:var(--line);transform:translateX(-50%)}
+.fork .drop-l{left:25%}
+.fork .drop-r{left:75%}
+.fork .chev{position:absolute;bottom:0;width:9px;height:9px;border-right:1.6px solid var(--teal);border-bottom:1.6px solid var(--teal);transform:translate(-50%,1px) rotate(45deg)}
+.fork .chev-l{left:25%}
+.fork .chev-r{left:75%}
+.flow-outs{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.flow-out{border-radius:14px;padding:18px;text-align:center;border:1px solid var(--line)}
+.flow-out .who{display:inline-block;font-size:12px;letter-spacing:.14em;margin-bottom:9px;padding:3px 13px;border-radius:999px}
+.flow-out.you{background:rgba(34,73,95,.06)}
+.flow-out.you .who{background:var(--deep);color:#fff}
+.flow-out.friend{background:rgba(105,182,190,.14)}
+.flow-out.friend .who{background:var(--teal);color:#fff}
+.flow-out strong{font-family:var(--font-display);font-weight:700;font-size:15.5px;color:var(--deep);display:block;line-height:1.5}
+.merge{position:relative;height:42px}
+.merge .drop{position:absolute;top:0;width:1.6px;height:22px;background:var(--line);transform:translateX(-50%)}
+.merge .drop-l{left:25%}
+.merge .drop-r{left:75%}
+.merge .bar{position:absolute;left:25%;right:25%;top:21px;height:1.6px;background:var(--line)}
+.merge .stem{position:absolute;left:50%;top:21px;width:1.6px;height:21px;background:var(--line);transform:translateX(-50%)}
+.merge .chev{position:absolute;left:50%;bottom:0;width:9px;height:9px;border-right:1.6px solid var(--teal);border-bottom:1.6px solid var(--teal);transform:translate(-50%,1px) rotate(45deg)}
+.flow-end{
+  text-align:center;color:#fff;border-radius:16px;padding:17px 24px;
+  background:linear-gradient(135deg,var(--blue),var(--deep));
+  font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.04em;
+  box-shadow:0 10px 24px rgba(34,73,95,.18);
+}
+@media (max-width:600px){
+  .flow-node{padding:16px 18px;gap:14px}
+  .flow-badge{width:42px;height:42px;font-size:18px}
+  .flow-node h3{font-size:16.5px}.flow-node p{font-size:13.5px}
+  .flow-out{padding:14px 12px}.flow-out strong{font-size:14px}.flow-end{font-size:15.5px}
+}
+
+/* ---------- 專屬回饋 ---------- */
+.sec-rewards{background:var(--band);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.venn{max-width:520px;margin:44px auto 10px}
+.reward-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:38px}
+.reward-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:34px 30px;text-align:center;box-shadow:var(--shadow-sm);
+}
+.reward-card .tag{
+  display:inline-block;font-size:13px;letter-spacing:.18em;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px;background:var(--aqua-pale);
+}
+.reward-amount{font-family:var(--font-display);font-weight:700;font-size:clamp(24px,3.2vw,32px);line-height:1.5;color:var(--deep)}
+.reward-amount em{font-style:normal;color:var(--blue)}
+.reward-card p{color:var(--muted);font-size:15px;margin-top:12px}
+.redeem{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:32px 34px;text-align:left;box-shadow:var(--shadow-sm)}
+.redeem-title{font-size:14px;letter-spacing:.18em;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.redeem-title::before{content:"";width:20px;height:1px;background:var(--teal)}
+.redeem-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.redeem-item h3{font-size:19px;margin-bottom:6px}
+.redeem-item h3 em{font-style:normal;color:var(--teal-deep)}
+.redeem-item p{font-size:14.5px;color:var(--muted)}
+@media (min-width:761px){.redeem-item + .redeem-item{border-left:1px solid var(--line);padding-left:28px}}
+@media (max-width:760px){
+  .reward-cards{grid-template-columns:1fr}
+  .redeem{padding:26px 22px}.redeem-grid{grid-template-columns:1fr;gap:20px}
+  .redeem-item + .redeem-item{border-top:1px solid var(--line);padding-top:20px}
+}
+
+/* ---------- 級距加碼（深色水帶） ---------- */
+.sec-milestone{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--deep),#1A3B4D);color:var(--aqua-soft);padding:116px 0}
+.sec-milestone .eyebrow{color:var(--aqua-soft)}
+.sec-milestone .eyebrow::before{background:var(--teal)}
+.sec-milestone h2{color:#fff}
+.sec-milestone .lead{color:var(--aqua-soft)}
+.milestones{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.milestone{
+  border:1px solid rgba(198,228,241,.22);border-radius:var(--radius);
+  padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  background:rgba(255,255,255,.06);text-align:center;backdrop-filter:blur(2px);
+}
+.milestone-badge{
+  width:60px;height:60px;border-radius:50%;border:1px solid var(--teal);
+  display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:700;color:#bfe6ea;font-size:17px;line-height:1.2;
+  background:rgba(105,182,190,.12);
+}
+.milestone h3{color:#fff;font-size:18px}
+.milestone p{font-size:15px;color:var(--aqua-soft)}
+.milestone p strong{color:#bfe6ea;font-weight:500}
+.milestone-note{margin-top:26px;font-size:13.5px;color:var(--aqua-soft);opacity:.85}
+@media (max-width:760px){.milestones{grid-template-columns:1fr}}
+
+/* ---------- 表單 ---------- */
+.form-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:44px 40px;margin-top:44px;box-shadow:var(--shadow)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 24px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field-full{grid-column:1 / -1}
+.field label{font-size:14px;font-weight:500;letter-spacing:.04em}
+.field label .req{color:var(--blue);margin-left:2px}
+.field input,.field select,.field textarea{
+  font-family:var(--font-body);font-size:15px;color:var(--ink);
+  background:var(--surface-top);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;transition:border-color .2s ease,box-shadow .2s ease;
+  appearance:none;-webkit-appearance:none;
+}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235B8197' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;
+}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,147,194,.16)}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden}
+.form-foot{margin-top:30px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.form-status{font-size:14.5px;min-height:1.5em}
+.form-status.ok{color:var(--teal-deep)}
+.form-status.err{color:#C2603F}
+.privacy{font-size:13px;color:var(--muted);opacity:.9}
+.login-notice{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  background:var(--aqua-pale);border:1px solid var(--aqua-soft);
+  border-radius:10px;padding:14px 18px;font-size:14.5px;color:var(--deep);
+}
+.ref-preview{margin-top:20px;background:var(--surface-top);border:1px solid var(--line);border-radius:10px;padding:13px 18px;display:flex;align-items:center;gap:12px}
+.ref-preview-label{font-size:13px;color:var(--muted);white-space:nowrap}
+.ref-preview-val{font-size:15px;font-weight:500;color:var(--deep)}
+.fallback{display:none;width:100%;background:var(--surface-top);border:1px dashed var(--line);border-radius:12px;padding:22px}
+.fallback.show{display:block}
+.fallback p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.fallback textarea{width:100%;min-height:180px;resize:vertical;font-family:var(--font-body);font-size:13.5px;line-height:1.8;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.fallback-actions{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+@media (max-width:760px){.form-card{padding:32px 22px}.form-grid{grid-template-columns:1fr}}
+
+/* ---------- 登入彈窗 ---------- */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(31,65,80,.45);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:24px;width:100%;max-width:420px;box-shadow:0 28px 70px rgba(34,73,95,.28);overflow:hidden;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+.modal-header{position:relative;text-align:center;padding:26px 30px 0}
+.modal-header h3{font-size:21px;margin-bottom:4px}
+.modal-header p{font-size:14px;color:var(--muted)}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);line-height:1;padding:0}
+.modal-close:hover{color:var(--deep)}
+.modal-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);margin-top:20px}
+.tab-btn{background:none;border:none;cursor:pointer;font-family:var(--font-body);font-size:15px;font-weight:500;color:var(--muted);padding:14px 0;transition:color .2s;border-bottom:2px solid transparent}
+.tab-btn.active{color:var(--deep);border-bottom-color:var(--blue)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.modal-body{padding:24px 30px 28px}
+.modal .mfield{margin-bottom:16px}
+.modal .mfield label{display:block;font-size:13.5px;font-weight:500;margin-bottom:6px}
+.modal .mfield label .req{color:var(--blue)}
+.modal .mfield input{width:100%;font-family:var(--font-body);font-size:15px;color:var(--ink);background:var(--surface-top);border:1px solid var(--line);border-radius:10px;padding:11px 14px;transition:border-color .2s,box-shadow .2s}
+.modal .mfield input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,147,194,.16)}
+.modal-msg{font-size:13.5px;min-height:1.4em;margin-bottom:12px}
+.modal-msg.ok{color:var(--teal-deep)}
+.modal-msg.err{color:#C2603F}
+.modal .btn-full{width:100%;text-align:center;border:none;font-family:var(--font-body)}
+
+/* ---------- 會員中心：我的紅利 ---------- */
+.modal-lg{max-width:520px}
+.member-body{max-height:74vh;overflow-y:auto}
+.uname-btn{background:none;border:none;font:inherit;color:var(--deep);font-weight:500;cursor:pointer;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--aqua-soft)}
+.uname-btn:hover{text-decoration-color:var(--blue)}
+.points-card{background:linear-gradient(135deg,var(--blue),var(--deep));color:#fff;border-radius:16px;padding:26px 24px;text-align:center;margin-bottom:24px;box-shadow:0 10px 26px rgba(34,73,95,.2)}
+.points-label{display:block;font-size:13px;letter-spacing:.16em;opacity:.85;margin-bottom:4px}
+.points-num{font-family:var(--font-display);font-weight:700;font-size:46px;line-height:1.1}
+.points-unit{font-size:15px;margin-left:5px;opacity:.9}
+.points-bar{height:6px;border-radius:999px;background:rgba(255,255,255,.22);margin:16px 0 10px;overflow:hidden}
+.points-bar span{display:block;height:100%;width:0;background:#bfe6ea;border-radius:999px;transition:width .6s ease}
+.points-hint{font-size:13px;opacity:.92}
+.member-block{margin-bottom:24px}
+.member-block h4{font-family:var(--font-display);font-size:17px;color:var(--deep);margin-bottom:12px}
+.ref-list{list-style:none;display:grid;gap:8px}
+.ref-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface-top);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+.rf-name{font-weight:500;color:var(--ink)}
+.rf-meta{font-size:12.5px;color:var(--muted);text-align:right;flex:0 0 auto}
+.ref-empty{display:block;font-size:14px;color:var(--muted);background:var(--surface-top);border:1px dashed var(--line);border-radius:10px;padding:18px;text-align:center}
+.redeem-desc{font-size:13.5px;color:var(--muted);margin-bottom:12px;line-height:1.7}
+.redeem-opts{display:flex;gap:10px;flex-wrap:wrap}
+.redeem-text{width:100%;min-height:120px;margin-top:12px;font-family:var(--font-body);font-size:13.5px;line-height:1.7;color:var(--ink);background:var(--surface-top);border:1px solid var(--line);border-radius:10px;padding:12px 14px;resize:vertical}
+.redeem-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.member-note{font-size:12px;color:var(--muted);opacity:.85;margin-top:8px;line-height:1.7}
+
+/* ---------- 點數異動清單（會員中心） ---------- */
+.ledger-list{list-style:none;display:grid;gap:8px}
+.ledger-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface-top);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.lg-amt{font-weight:600}
+.lg-grant .lg-amt{color:var(--teal-deep)}
+.lg-redeem .lg-amt{color:#C2603F}
+
+/* ---------- 管理後台 ---------- */
+.modal-admin{max-width:600px}
+.admin-body{max-height:78vh;overflow-y:auto}
+.admin-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:14px;color:var(--muted)}
+.admin-bar strong{color:var(--deep);font-size:16px}
+.admin-logout{font-size:13px;text-decoration:underline;text-underline-offset:2px}
+.admin-status{font-size:13.5px;color:var(--teal-deep);min-height:1.3em;margin-bottom:10px}
+.admin-status.err{color:#C2603F}
+.admin-card{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px;background:var(--surface-top)}
+.admin-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.admin-name{font-weight:600;color:var(--deep)}
+.admin-acct{font-size:12.5px;color:var(--muted)}
+.admin-bal{font-family:var(--font-display);font-weight:700;color:var(--blue-strong);white-space:nowrap}
+.admin-bal span{font-size:24px}
+.admin-refs{font-size:13px;color:var(--muted);margin:10px 0 12px;line-height:1.6}
+.admin-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.admin-controls input{font-family:var(--font-body);font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 12px}
+.admin-controls .admin-amount{width:96px}
+.admin-controls .admin-note{flex:1;min-width:130px}
+.admin-controls input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,147,194,.16)}
+.admin-ledger{margin-top:12px;font-size:13px}
+.admin-ledger summary{cursor:pointer;color:var(--muted)}
+.admin-ledger ul{list-style:none;margin-top:8px;display:grid;gap:0}
+.admin-ledger li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px dashed var(--line)}
+.admin-empty{font-size:14px;color:var(--muted);text-align:center;padding:18px}
+.admin-entry{background:none;border:none;color:inherit;opacity:.75;cursor:pointer;text-decoration:underline;text-underline-offset:2px;font:inherit}
+.admin-entry:hover{opacity:1;color:#fff}
+
+/* ---------- FAQ ---------- */
+.faq-list{margin-top:40px;border-top:1px solid var(--line)}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{width:100%;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 4px;text-align:left;font-family:var(--font-body);font-size:16.5px;font-weight:500;color:var(--deep)}
+.faq-q:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+.faq-icon{flex:0 0 auto;width:14px;height:14px;position:relative;transition:transform .3s ease}
+.faq-icon::before,.faq-icon::after{content:"";position:absolute;background:var(--teal);left:50%;top:50%}
+.faq-icon::before{width:14px;height:1.6px;transform:translate(-50%,-50%)}
+.faq-icon::after{width:1.6px;height:14px;transform:translate(-50%,-50%)}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-a p{padding:0 4px 24px;color:var(--muted);font-size:15px;max-width:680px}
+
+/* ---------- 注意事項 ---------- */
+.notes{background:var(--aqua-pale);border:1px solid var(--aqua-soft);border-radius:var(--radius);padding:34px 36px}
+.notes h3{font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.notes ol{padding-left:22px;color:var(--muted);font-size:14px;display:grid;gap:8px}
+@media (max-width:760px){.notes{padding:28px 22px}}
+
+/* ---------- Footer ---------- */
+footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--deep),#16323F);color:var(--aqua-soft);padding:96px 0 40px}
+.foot-inner{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;align-items:flex-start}
+.foot-brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:19px;color:#fff;letter-spacing:.06em}
+.foot-contact{font-size:14.5px;display:grid;gap:6px}
+.ig-link{display:inline-flex;align-items:center;gap:9px;font-size:15px;transition:color .2s}
+.ig-link:hover{color:#fff}
+.copyright{margin-top:36px;padding-top:22px;border-top:1px solid rgba(198,228,241,.2);font-size:13px;opacity:.7}
+
+/* ---------- 點擊漣漪特效 ---------- */
+.tap-ripple{position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:1.5px solid rgba(74,147,194,.5);pointer-events:none;z-index:9999;animation:tapRipple .7s ease-out forwards}
+@keyframes tapRipple{from{transform:scale(.35);opacity:.75}to{transform:scale(7);opacity:0}}
+
+/* ---------- 進場動畫 ---------- */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .ripples span,.emit,.blob{animation:none}
+  .tap-ripple{display:none}
+  .btn,.faq-icon,.faq-a{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 環境漂浮光暈 -->
+<div class="ambient" aria-hidden="true">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+</div>
+
+<!-- ===================== 導覽列 ===================== -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <!-- ✏️ Logo：蓮花＋水紋（hero 與 footer 各有一份） -->
+    <button class="brand" type="button" data-target="#top" aria-label="合一療癒 回到頁首">
+      <svg width="34" height="28" viewBox="0 0 36 30" aria-hidden="true">
+        <g fill="none" stroke="#22495F" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M18 3 C14.8 8 14.8 14.6 18 19 C21.2 14.6 21.2 8 18 3 Z"/>
+          <path d="M7 8.5 C7.8 14.6 11.6 18.4 17 19.4 C15.8 13.8 12.4 10 7 8.5 Z"/>
+          <path d="M29 8.5 C28.2 14.6 24.4 18.4 19 19.4 C20.2 13.8 23.6 10 29 8.5 Z"/>
+        </g>
+        <path d="M5.5 24.5 Q11.75 28.5 18 24.5 Q24.25 28.5 30.5 24.5" fill="none" stroke="#69B6BE" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      合一療癒
+    </button>
+    <nav class="nav-links" aria-label="主要選單">
+      <button class="link-btn" type="button" data-target="#how">方案說明</button>
+      <button class="link-btn" type="button" data-target="#rewards">專屬回饋</button>
+      <button class="link-btn" type="button" data-target="#faq">常見問題</button>
+      <button class="btn btn-primary nav-cta" type="button" data-target="#form">登記轉介紹</button>
+      <button class="btn btn-ghost btn-sm nav-login" id="navLoginBtn" type="button">登入／註冊</button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ===================== Hero ===================== -->
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="ripples" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <div class="emit" aria-hidden="true"></div>
+  <div class="emit emit-2" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <svg class="mark" viewBox="0 0 36 30" aria-hidden="true">
+      <g fill="none" stroke="#22495F" stroke-width="1.3" stroke-linejoin="round">
+        <path d="M18 3 C14.8 8 14.8 14.6 18 19 C21.2 14.6 21.2 8 18 3 Z"/>
+        <path d="M7 8.5 C7.8 14.6 11.6 18.4 17 19.4 C15.8 13.8 12.4 10 7 8.5 Z"/>
+        <path d="M29 8.5 C28.2 14.6 24.4 18.4 19 19.4 C20.2 13.8 23.6 10 29 8.5 Z"/>
+      </g>
+      <path d="M5.5 24.5 Q11.75 28.5 18 24.5 Q24.25 28.5 30.5 24.5" fill="none" stroke="#69B6BE" stroke-width="1.3" stroke-linecap="round"/>
+    </svg>
+    <p class="eyebrow" style="justify-content:center">合一療癒・個案轉介紹回饋方案</p>
+    <h1>讓療癒，像漣漪一樣擴散</h1>
+    <p class="lead">謝謝您一路以來的信任。當您把合一療癒推薦給好友，雙方都會收到我們準備的回饋——讓這份美好持續流動。</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" type="button" data-target="#form">登記轉介紹</button>
+      <button class="btn btn-ghost" type="button" data-target="#rewards">看回饋內容</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 方案說明：流程圖 ===================== -->
+<section class="sec" id="how">
+  <div class="wrap center reveal">
+    <p class="eyebrow" style="justify-content:center">方案說明</p>
+    <h2>三步驟，讓漣漪開始</h2>
+    <p class="lead">參與方式很簡單，沒有門檻，也不限次數。</p>
+
+    <!-- ✏️ 流程圖文字：修改各節點標題與說明 -->
+    <div class="flow reveal">
+      <div class="flow-node">
+        <span class="flow-badge">一</span>
+        <div>
+          <h3>真心分享</h3>
+          <p>把您在合一療癒的好體驗，分享給身邊的好友。</p>
+        </div>
+      </div>
+
+      <div class="flow-link"><span class="stem"></span><span class="chev"></span></div>
+
+      <div class="flow-node">
+        <span class="flow-badge">二</span>
+        <div>
+          <h3>好友預約</h3>
+          <p>好友預約免費健康諮詢或健康講座，並告知介紹人姓名。</p>
+        </div>
+      </div>
+
+      <div class="flow-link"><span class="stem"></span><span class="chev"></span></div>
+
+      <div class="flow-node">
+        <span class="flow-badge">三</span>
+        <div>
+          <h3>完成體驗</h3>
+          <p>好友完成首次諮詢或出席講座，推薦即告成立。</p>
+        </div>
+      </div>
+
+      <div class="flow-link"><span class="stem"></span><span class="tag">成功推薦後</span><span class="chev"></span></div>
+
+      <div class="fork">
+        <span class="stem"></span><span class="bar"></span>
+        <span class="drop drop-l"></span><span class="drop drop-r"></span>
+        <span class="chev chev-l"></span><span class="chev chev-r"></span>
+      </div>
+
+      <div class="flow-outs">
+        <div class="flow-out you">
+          <span class="who">您</span>
+          <strong>＋500 點紅利<br>可累積兌換</strong>
+        </div>
+        <div class="flow-out friend">
+          <span class="who">好友</span>
+          <strong>免費健康諮詢<br>＋健康講座</strong>
+        </div>
+      </div>
+
+      <div class="merge">
+        <span class="drop drop-l"></span><span class="drop drop-r"></span>
+        <span class="bar"></span><span class="stem"></span><span class="chev"></span>
+      </div>
+
+      <div class="flow-end">雙方共好，讓療癒持續擴散</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 專屬回饋 ===================== -->
+<section class="sec sec-rewards" id="rewards">
+  <div class="wrap center reveal">
+    <p class="eyebrow" style="justify-content:center">專屬回饋</p>
+    <h2>雙方都有的回饋</h2>
+    <p class="lead">一次成功的推薦，是兩個人的共好。</p>
+
+    <svg class="venn" viewBox="0 0 520 240" role="img" aria-label="您與好友的回饋交集示意圖">
+      <g style="mix-blend-mode:multiply">
+        <circle cx="195" cy="120" r="100" fill="#C6E4F1" opacity="0.6"/>
+        <circle cx="325" cy="120" r="100" fill="#Bfe6ea" opacity="0.6"/>
+      </g>
+      <circle cx="195" cy="120" r="100" fill="none" stroke="#22495F" stroke-width="1.4"/>
+      <circle cx="325" cy="120" r="100" fill="none" stroke="#3E8C95" stroke-width="1.4"/>
+      <text x="150" y="126" text-anchor="middle" font-size="20" fill="#22495F" style="font-family:'LXGW WenKai TC',serif;font-weight:700">您</text>
+      <text x="370" y="126" text-anchor="middle" font-size="20" fill="#3E8C95" style="font-family:'LXGW WenKai TC',serif;font-weight:700">好友</text>
+      <text x="260" y="113" text-anchor="middle" font-size="15" fill="#5B8197" style="font-family:'LXGW WenKai TC',serif">共</text>
+      <text x="260" y="140" text-anchor="middle" font-size="15" fill="#5B8197" style="font-family:'LXGW WenKai TC',serif">好</text>
+    </svg>
+
+    <!-- ✏️ 回饋內容：直接修改下方點數與說明文字 -->
+    <div class="reward-cards">
+      <div class="reward-card reveal">
+        <span class="tag">您將獲得</span>
+        <div class="reward-amount"><em>500 點</em>紅利</div>
+        <p>每成功推薦 1 位好友即發放，可無上限累積；滿 1,500 點即可開始兌換。</p>
+      </div>
+      <div class="reward-card reveal">
+        <span class="tag">好友將獲得</span>
+        <div class="reward-amount"><em>免費</em>健康諮詢＋健康講座</div>
+        <p>由專人一對一了解需求，並可參加健康講座，安心展開健康之旅。</p>
+      </div>
+    </div>
+
+    <!-- ✏️ 兌換方式：修改點數門檻、倍率與範例金額 -->
+    <div class="redeem reveal">
+      <p class="redeem-title">紅利點數這樣用（滿 1,500 點即可兌換）</p>
+      <div class="redeem-grid">
+        <div class="redeem-item">
+          <h3>直接兌換現金</h3>
+          <p>累積滿 1,500 點，即可申請折現，回饋最直接。</p>
+        </div>
+        <div class="redeem-item">
+          <h3>兌換商品 <em>×1.25 倍</em></h3>
+          <p>選擇優惠方案，以 1.25 倍點數價值折抵商品——1,500 點＝1,875 元商品額度。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 級距加碼 ===================== -->
+<section class="sec sec-milestone">
+  <div class="wave wave-top" aria-hidden="true">
+    <svg viewBox="0 0 1440 58" preserveAspectRatio="none"><path d="M0,0 L1440,0 L1440,26 C1200,58 960,58 720,30 C480,2 240,2 0,30 Z" fill="#EEF6FB"/></svg>
+  </div>
+  <div class="wave wave-bottom" aria-hidden="true">
+    <svg viewBox="0 0 1440 58" preserveAspectRatio="none"><path d="M0,0 L1440,0 L1440,26 C1200,58 960,58 720,30 C480,2 240,2 0,30 Z" fill="#EEF6FB"/></svg>
+  </div>
+  <div class="wrap center reveal">
+    <p class="eyebrow" style="justify-content:center">級距加碼</p>
+    <h2>推薦越多，紅利越多</h2>
+    <p class="lead">每位 500 點照常累積，達到級距再加贈。</p>
+
+    <!-- ✏️ 級距：修改人數門檻與加贈點數（此處為範例值） -->
+    <div class="milestones">
+      <div class="milestone reveal">
+        <div class="milestone-badge">3 位</div>
+        <h3>成功推薦 3 位</h3>
+        <p>加贈 <strong>500 點</strong> 紅利</p>
+      </div>
+      <div class="milestone reveal">
+        <div class="milestone-badge">5 位</div>
+        <h3>成功推薦 5 位</h3>
+        <p>加贈 <strong>1,200 點</strong> 紅利</p>
+      </div>
+      <div class="milestone reveal">
+        <div class="milestone-badge">10 位</div>
+        <h3>成功推薦 10 位</h3>
+        <p>加贈 <strong>3,000 點</strong> 紅利</p>
+      </div>
+    </div>
+    <p class="milestone-note">級距加碼與每位 500 點推薦紅利可同時累計；實際級距與加贈點數以官方公告為準。</p>
+  </div>
+</section>
+
+<!-- ===================== 登記表單 ===================== -->
+<section class="sec" id="form">
+  <div class="wrap reveal">
+    <div class="center">
+      <p class="eyebrow" style="justify-content:center">立即參與</p>
+      <h2>登記轉介紹</h2>
+      <p class="lead">登入會員後留下好友的資料，好友完成首次健康諮詢或講座後，我們會主動通知您領取紅利。好友預約時口頭告知介紹人，同樣有效。</p>
+    </div>
+
+    <form class="form-card" id="referralForm" novalidate>
+      <div class="form-grid">
+        <div class="field field-full" id="loginNoticeField" style="display:none">
+          <div class="login-notice">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#3C82B0" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="7.5"/><path d="M9 5.5v4.2M9 12.4v.2"/></svg>
+            請先登入帳號，系統將自動帶入您的介紹人資料。
+            <button type="button" class="btn btn-primary btn-sm" id="formLoginBtn" style="margin-left:12px">立即登入</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="friendName">好友姓名<span class="req">＊</span></label>
+          <input type="text" id="friendName" name="friendName" required placeholder="想推薦的好友">
+        </div>
+        <div class="field">
+          <label for="friendContact">好友電話／LINE ID</label>
+          <input type="text" id="friendContact" name="friendContact" placeholder="選填，方便我們主動聯繫">
+        </div>
+        <div class="field field-full">
+          <label for="service">好友想了解的服務</label>
+          <!-- ✏️ 服務選項：依實際提供的服務項目修改 -->
+          <select id="service" name="service">
+            <option value="" selected>請選擇（選填）</option>
+            <option>健康諮詢</option>
+            <option>肌膚諮詢</option>
+            <option>皮拉提斯</option>
+            <option>芳香療癒課程</option>
+            <option>身心靈療癒課程</option>
+          </select>
+        </div>
+        <div class="field field-full">
+          <label for="message">想對我們說的話</label>
+          <textarea id="message" name="message" placeholder="選填，任何想補充的內容"></textarea>
+        </div>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      </div>
+
+      <!-- 已登入時顯示介紹人資料預覽 -->
+      <div class="ref-preview" id="refPreview" style="display:none">
+        <div>
+          <p class="ref-preview-label">介紹人（登入帳號）</p>
+          <p class="ref-preview-val" id="refPreviewVal"></p>
+        </div>
+        <button class="btn btn-ghost btn-sm" type="button" id="openMemberBtn" style="margin-left:auto">查看我的紅利</button>
+      </div>
+
+      <div class="form-foot">
+        <button type="submit" class="btn btn-primary" id="submitBtn">送出登記</button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+
+        <div class="fallback" id="fallbackBox">
+          <p>請複製下方內容，透過 <strong>Instagram 私訊</strong> 傳給我們，即完成登記：</p>
+          <textarea id="fallbackText" readonly aria-label="登記內容"></textarea>
+          <div class="fallback-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="copyBtn">複製內容</button>
+            <a class="btn btn-ghost btn-sm" id="igLink" href="https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr" target="_blank" rel="noopener">前往 Instagram</a>
+          </div>
+        </div>
+
+        <p class="privacy">您提供的資料僅用於本方案的聯繫與回饋發放，我們會妥善保管，不另作其他用途。</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== 常見問題 ===================== -->
+<section class="sec-tight" id="faq">
+  <div class="wrap reveal">
+    <div class="center">
+      <p class="eyebrow" style="justify-content:center">常見問題</p>
+      <h2>想了解更多？</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">怎麼樣才算「成功推薦」？<span class="faq-icon" aria-hidden="true"></span></button>
+        <div class="faq-a"><p>好友完成首次免費健康諮詢，或出席健康講座報到後即成立。我們會在 7 個工作天內為您發放 500 點紅利。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">沒有先填表單，好友直接預約可以嗎？<span class="faq-icon" aria-hidden="true"></span></button>
+        <div class="faq-a"><p>可以。請好友預約時告知介紹人姓名，我們就會為雙方登記回饋。先填表單則能確保資料完整、不會漏登。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">紅利點數怎麼兌換？有期限嗎？<span class="faq-icon" aria-hidden="true"></span></button>
+        <div class="faq-a"><p>累積滿 1,500 點即可兌換：可選擇直接折現，或以 1.25 倍點數價值兌換商品（1,500 點＝1,875 元商品額度）。點數自發放日起 12 個月內有效。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">推薦多位好友，紅利可以累積嗎？<span class="faq-icon" aria-hidden="true"></span></button>
+        <div class="faq-a"><p>可以，紅利無上限累積。達到級距（3、5、10 位）另有加碼贈點，推薦越多回饋越多。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 注意事項 ===================== -->
+<section class="sec-tight">
+  <div class="wrap reveal">
+    <div class="notes">
+      <h3>
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+          <circle cx="9" cy="9" r="7.5" fill="none" stroke="#5B8197" stroke-width="1.4"/>
+          <path d="M9 5.5v4.2M9 12.4v.2" stroke="#5B8197" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        注意事項
+      </h3>
+      <ol>
+        <li>「成功推薦」指好友完成首次免費健康諮詢，或出席健康講座完成報到。</li>
+        <li>紅利點數自發放日起 12 個月內有效，逾期失效。</li>
+        <li>點數累積滿 1,500 點起可兌換，折現與 1.25 倍商品兌換擇一使用；點數限本人使用，不得轉讓。</li>
+        <li>受推薦之好友須為首次來訪的新朋友，同一位好友不重複計算。</li>
+        <li>本方案內容如有調整，以官方最新公告為準；合一療癒保留方案修改與最終解釋之權利。</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== 登入彈窗 ===================== -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="登入或註冊">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>會員登入</h3>
+      <p>登入後方可送出轉介紹登記</p>
+      <button class="modal-close" id="modalClose" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="tab-btn active" type="button" data-tab="login">登入</button>
+      <button class="tab-btn" type="button" data-tab="register">新增帳號</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-panel active" id="panel-login">
+        <p class="modal-msg" id="loginMsg"></p>
+        <div class="mfield">
+          <label for="loginId">帳號</label>
+          <input type="text" id="loginId" placeholder="請輸入您的帳號">
+        </div>
+        <div class="mfield">
+          <label for="loginPw">密碼</label>
+          <input type="password" id="loginPw" placeholder="請輸入密碼">
+        </div>
+        <button class="btn btn-primary btn-full" type="button" id="loginSubmit">登入</button>
+      </div>
+      <div class="tab-panel" id="panel-register">
+        <p class="modal-msg" id="regMsg"></p>
+        <div class="mfield">
+          <label for="regName">您的姓名<span class="req">＊</span></label>
+          <input type="text" id="regName" placeholder="介紹人姓名">
+        </div>
+        <div class="mfield">
+          <label for="regId">帳號<span class="req">＊</span></label>
+          <input type="text" id="regId" placeholder="設定登入帳號，需唯一">
+        </div>
+        <div class="mfield">
+          <label for="regPw">設定密碼<span class="req">＊</span></label>
+          <input type="password" id="regPw" placeholder="至少 6 個字元">
+        </div>
+        <button class="btn btn-primary btn-full" type="button" id="regSubmit">建立帳號</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 會員中心：我的紅利 ===================== -->
+<div class="modal-overlay" id="memberOverlay" role="dialog" aria-modal="true" aria-label="我的紅利">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>我的紅利</h3>
+      <p id="memberHello"></p>
+      <button class="modal-close" id="memberClose" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="modal-body member-body">
+      <!-- 點數摘要 -->
+      <div class="points-card">
+        <span class="points-label">目前可用紅利點數</span>
+        <div><span class="points-num" id="pointsNum">0</span><span class="points-unit">點</span></div>
+        <div class="points-bar"><span id="pointsBarFill"></span></div>
+        <p class="points-hint" id="pointsHint"></p>
+      </div>
+
+      <!-- 推薦好友 -->
+      <div class="member-block">
+        <h4>推薦好友紀錄</h4>
+        <ul class="ref-list" id="refList"></ul>
+      </div>
+
+      <!-- 點數異動 -->
+      <div class="member-block">
+        <h4>點數異動紀錄</h4>
+        <ul class="ledger-list" id="memberLedger"></ul>
+      </div>
+
+      <!-- 兌換紅利 -->
+      <div class="member-block">
+        <h4>兌換紅利</h4>
+        <p class="redeem-desc">滿 1,500 點即可兌換。選擇方式後，系統會整理好兌換申請，請透過 Instagram 私訊傳給我們完成兌換。</p>
+        <div class="redeem-opts">
+          <button class="btn btn-ghost btn-sm" type="button" id="redeemCash">申請現金折抵</button>
+          <button class="btn btn-ghost btn-sm" type="button" id="redeemGoods">申請商品兌換 ×1.25</button>
+        </div>
+        <p class="modal-msg" id="redeemMsg"></p>
+        <textarea class="redeem-text" id="redeemText" readonly style="display:none" aria-label="兌換申請內容"></textarea>
+        <div class="redeem-actions" id="redeemActions" style="display:none">
+          <button class="btn btn-primary btn-sm" type="button" id="redeemCopy">複製申請</button>
+          <a class="btn btn-ghost btn-sm" href="https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr" target="_blank" rel="noopener">前往 Instagram</a>
+        </div>
+      </div>
+
+      <p class="member-note">點數於好友完成首次體驗後由管理員確認發放；推薦紀錄儲存於此裝置瀏覽器，實際點數與兌換結果以官方紀錄為準。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 管理後台 ===================== -->
+<div class="modal-overlay" id="adminOverlay" role="dialog" aria-modal="true" aria-label="管理後台">
+  <div class="modal modal-admin">
+    <div class="modal-header">
+      <h3>管理後台</h3>
+      <p id="adminSub">輸入管理密碼進入</p>
+      <button class="modal-close" id="adminClose" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="modal-body admin-body">
+      <!-- 密碼閘 -->
+      <div id="adminGate">
+        <p class="modal-msg" id="adminGateMsg"></p>
+        <div class="mfield">
+          <label for="adminPw">管理密碼</label>
+          <input type="password" id="adminPw" placeholder="請輸入管理密碼">
+        </div>
+        <button class="btn btn-primary btn-full" type="button" id="adminEnter">進入後台</button>
+      </div>
+      <!-- 後台內容 -->
+      <div id="adminPanel" style="display:none">
+        <div class="admin-bar">
+          <span>會員總數 <strong id="adminCount">0</strong></span>
+          <button class="link-btn admin-logout" type="button" id="adminLogout">登出後台</button>
+        </div>
+        <p class="admin-status" id="adminStatus"></p>
+        <div id="adminList"></div>
+        <p class="member-note">於各會員欄位輸入點數後，按「發放」增加紅利、按「兌換」扣除紅利（兌換不可超過餘額）。資料儲存於此瀏覽器，僅顯示在此裝置註冊的會員。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== Footer ===================== -->
+<footer>
+  <div class="wave wave-top" aria-hidden="true">
+    <svg viewBox="0 0 1440 58" preserveAspectRatio="none"><path d="M0,0 L1440,0 L1440,26 C1200,58 960,58 720,30 C480,2 240,2 0,30 Z" fill="#DCEEF7"/></svg>
+  </div>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <svg width="34" height="28" viewBox="0 0 36 30" aria-hidden="true">
+          <g fill="none" stroke="#C6E4F1" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M18 3 C14.8 8 14.8 14.6 18 19 C21.2 14.6 21.2 8 18 3 Z"/>
+            <path d="M7 8.5 C7.8 14.6 11.6 18.4 17 19.4 C15.8 13.8 12.4 10 7 8.5 Z"/>
+            <path d="M29 8.5 C28.2 14.6 24.4 18.4 19 19.4 C20.2 13.8 23.6 10 29 8.5 Z"/>
+          </g>
+          <path d="M5.5 24.5 Q11.75 28.5 18 24.5 Q24.25 28.5 30.5 24.5" fill="none" stroke="#69B6BE" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        合一療癒
+      </div>
+      <!-- ✏️ 聯絡資訊：Instagram -->
+      <div class="foot-contact">
+        <a class="ig-link" href="https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          @sky_the_physio
+        </a>
+      </div>
+    </div>
+    <p class="copyright">© <span id="year"></span> 合一療癒 Unity Healing. All rights reserved.　<button class="admin-entry" type="button" id="adminEntry">管理後台</button></p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   ✏️ EMAILJS_CONFIG：填入您的 EmailJS 金鑰後，表單將直接寄送
+   （三個值任一保持 YOUR_ 開頭時，送出會顯示「複製內容」備援面板，
+     不會跳轉、不會離開本頁）
+============================================================ */
+var EMAILJS_CONFIG = {
+  publicKey:  'YOUR_PUBLIC_KEY',
+  serviceId:  'YOUR_SERVICE_ID',
+  templateId: 'YOUR_TEMPLATE_ID'
+};
+var IG_URL = 'https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr';
+var ADMIN_PASSWORD = '318'; /* ✏️ 後台管理密碼。注意：寫在前端，檢視原始碼即可看到，僅適合低敏感度的內部使用。 */
+
+/* ---------- 年份 ---------- */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---------- 站內導覽：按鈕（無 href）＋ JS 捲動 ---------- */
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-target]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.querySelector(el.getAttribute('data-target'));
+      if (target) target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+})();
+
+/* ---------- 點擊漣漪特效 ---------- */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.addEventListener('pointerdown', function (e) {
+    var r = document.createElement('span');
+    r.className = 'tap-ripple';
+    r.style.left = e.clientX + 'px';
+    r.style.top = e.clientY + 'px';
+    document.body.appendChild(r);
+    setTimeout(function () { r.remove(); }, 700);
+  });
+})();
+
+/* ---------- 進場動畫 ---------- */
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); }
+    });
+  }, { threshold: 0.12 });
+  items.forEach(function (el) { io.observe(el); });
+})();
+
+/* ---------- FAQ 手風琴 ---------- */
+document.querySelectorAll('.faq-item').forEach(function (item) {
+  var btn = item.querySelector('.faq-q');
+  var panel = item.querySelector('.faq-a');
+  btn.addEventListener('click', function () {
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function (other) {
+      other.classList.remove('open');
+      other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      other.querySelector('.faq-a').style.maxHeight = null;
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    }
+  });
+});
+
+/* ============================================================
+   帳號系統（localStorage）
+============================================================ */
+(function () {
+  function getUsers() { try { return JSON.parse(localStorage.getItem('uh_users') || '[]'); } catch(e){ return []; } }
+  function saveUsers(u) { localStorage.setItem('uh_users', JSON.stringify(u)); }
+  function getSession() { try { return JSON.parse(localStorage.getItem('uh_session') || 'null'); } catch(e){ return null; } }
+  function setSession(u) { localStorage.setItem('uh_session', JSON.stringify(u)); }
+  function clearSession() { localStorage.removeItem('uh_session'); }
+
+  var navLoginBtn   = document.getElementById('navLoginBtn');
+  var overlay       = document.getElementById('modalOverlay');
+  var modalClose    = document.getElementById('modalClose');
+  var loginNotice   = document.getElementById('loginNoticeField');
+  var refPreview    = document.getElementById('refPreview');
+  var refPreviewVal = document.getElementById('refPreviewVal');
+  var submitBtn     = document.getElementById('submitBtn');
+  var formLoginBtn  = document.getElementById('formLoginBtn');
+  var memberOverlay = document.getElementById('memberOverlay');
+  var memberClose   = document.getElementById('memberClose');
+  var openMemberBtn = document.getElementById('openMemberBtn');
+  var adminOverlay  = document.getElementById('adminOverlay');
+  var adminClose    = document.getElementById('adminClose');
+
+  function syncNav() {
+    var user = getSession();
+    if (user) {
+      var nb = document.getElementById('navLoginBtn');
+      if (nb) {
+        var div = document.createElement('div');
+        div.className = 'nav-user'; div.id = 'navUser';
+        div.innerHTML = '<button class="uname uname-btn" type="button" id="memberBtn">' + escHtml(user.name) + '</button><button class="logout-btn" type="button" id="logoutBtn">登出</button>';
+        nb.parentNode.replaceChild(div, nb);
+        document.getElementById('logoutBtn').addEventListener('click', function () { clearSession(); location.reload(); });
+        var mbtn = document.getElementById('memberBtn');
+        if (mbtn) mbtn.addEventListener('click', openMember);
+      }
+      loginNotice.style.display = 'none';
+      refPreview.style.display  = 'flex';
+      refPreviewVal.textContent = user.name + '　' + user.contact;
+      submitBtn.disabled = false;
+    } else {
+      loginNotice.style.display = 'block';
+      refPreview.style.display  = 'none';
+      submitBtn.disabled = true;
+    }
+  }
+  syncNav();
+
+  function openModal()  { overlay.classList.add('show');    document.body.style.overflow = 'hidden'; }
+  function closeModal() { overlay.classList.remove('show'); document.body.style.overflow = ''; }
+  function openMember() { renderMember(); memberOverlay.classList.add('show'); document.body.style.overflow = 'hidden'; }
+  function closeMember(){ memberOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+
+  if (navLoginBtn)   navLoginBtn.addEventListener('click',  openModal);
+  if (formLoginBtn)  formLoginBtn.addEventListener('click', openModal);
+  if (modalClose)    modalClose.addEventListener('click',   closeModal);
+  if (openMemberBtn) openMemberBtn.addEventListener('click', openMember);
+  if (memberClose)   memberClose.addEventListener('click',  closeMember);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+  memberOverlay.addEventListener('click', function (e) { if (e.target === memberOverlay) closeMember(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); } });
+
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.getAttribute('data-tab')).classList.add('active');
+    });
+  });
+
+  document.getElementById('regSubmit').addEventListener('click', function () {
+    var name    = document.getElementById('regName').value.trim();
+    var contact = document.getElementById('regId').value.trim();
+    var pw      = document.getElementById('regPw').value;
+    var msg     = document.getElementById('regMsg');
+    if (!name)         { showMsg(msg, '請填寫姓名', 'err'); return; }
+    if (!contact)      { showMsg(msg, '請填寫帳號', 'err'); return; }
+    if (pw.length < 6) { showMsg(msg, '密碼至少 6 個字元', 'err'); return; }
+    var users = getUsers();
+    if (users.find(function (u) { return u.contact === contact; })) {
+      showMsg(msg, '此聯絡方式已有帳號，請直接登入', 'err'); return;
+    }
+    var user = { name: name, contact: contact, pw: simpleHash(pw) };
+    users.push(user); saveUsers(users); setSession(user);
+    showMsg(msg, '帳號建立成功！', 'ok');
+    setTimeout(function () { closeModal(); syncNav(); }, 800);
+  });
+
+  document.getElementById('loginSubmit').addEventListener('click', function () {
+    var contact = document.getElementById('loginId').value.trim();
+    var pw      = document.getElementById('loginPw').value;
+    var msg     = document.getElementById('loginMsg');
+    if (!contact || !pw) { showMsg(msg, '請填寫帳號與密碼', 'err'); return; }
+    var users = getUsers();
+    var user = users.find(function (u) { return u.contact === contact && u.pw === simpleHash(pw); });
+    if (!user) { showMsg(msg, '帳號或密碼不正確', 'err'); return; }
+    setSession(user);
+    showMsg(msg, '登入成功！', 'ok');
+    setTimeout(function () { closeModal(); syncNav(); }, 600);
+  });
+
+  function showMsg(el, txt, type) { el.textContent = txt; el.className = 'modal-msg ' + type; }
+  function escHtml(s) { return s.replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function simpleHash(s) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
+    return h.toString(16);
+  }
+
+  /* ============================================================
+     會員中心 + 後台：點數餘額由「管理員發放／兌換」的異動明細計算
+  ============================================================ */
+  var THRESHOLD = 1500; /* ✏️ 兌換門檻點數 */
+
+  function currentUser() {
+    var s = getSession(); if (!s) return null;
+    var us = getUsers();
+    return us.find(function (u) { return u.contact === s.contact; }) || s;
+  }
+  /* 餘額＝發放總和 − 兌換總和 */
+  function balanceOf(u) {
+    var bal = 0;
+    (u && u.ledger ? u.ledger : []).forEach(function (t) { bal += (t.type === 'grant' ? t.amount : -t.amount); });
+    return bal;
+  }
+  function copyText(text, btn, label) {
+    function done() { btn.textContent = '已複製！'; setTimeout(function () { btn.textContent = label; }, 2000); }
+    function legacy() { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} document.body.removeChild(ta); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
+  }
+
+  /* 記錄一筆推薦到登入會員 */
+  function recordReferral(d) {
+    var s = getSession(); if (!s) return;
+    var users = getUsers();
+    var u = users.find(function (x) { return x.contact === s.contact; });
+    if (!u) return;
+    u.referrals = u.referrals || [];
+    var svc = (d.service && d.service.indexOf('（') === 0) ? '' : d.service;
+    u.referrals.push({ friend: d.friend_name, service: svc, date: new Date().toLocaleDateString('zh-TW') });
+    saveUsers(users); setSession(u);
+  }
+
+  function renderMember() {
+    var u = currentUser(); if (!u) return;
+    var pts = balanceOf(u);
+    document.getElementById('memberHello').textContent = '你好，' + u.name;
+    document.getElementById('pointsNum').textContent = pts.toLocaleString();
+    document.getElementById('pointsBarFill').style.width = Math.min(Math.max(pts, 0) / THRESHOLD * 100, 100) + '%';
+    document.getElementById('pointsHint').textContent =
+      pts >= THRESHOLD ? '已達兌換門檻，可申請兌換！' : ('再累積 ' + Math.max(THRESHOLD - pts, 0).toLocaleString() + ' 點即可兌換');
+
+    var list = document.getElementById('refList');
+    var refs = u.referrals || [];
+    if (!refs.length) {
+      list.innerHTML = '<li class="ref-empty">目前還沒有推薦紀錄，邀請好友即可開始累積紅利。</li>';
+    } else {
+      list.innerHTML = refs.map(function (r) {
+        var meta = [r.service, r.date].filter(Boolean).join('・');
+        return '<li><span class="rf-name">' + escHtml(r.friend) + '</span><span class="rf-meta">' + escHtml(meta) + '</span></li>';
+      }).join('');
+    }
+
+    var led = document.getElementById('memberLedger');
+    var lg = (u.ledger || []).slice().reverse();
+    if (!lg.length) {
+      led.innerHTML = '<li class="ref-empty">尚無點數異動，待管理員確認發放。</li>';
+    } else {
+      led.innerHTML = lg.map(function (t) {
+        var grant = t.type === 'grant';
+        var note = t.note || (grant ? '紅利發放' : '紅利兌換');
+        return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">' + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">' + escHtml(note) + '・' + t.date + '</span></li>';
+      }).join('');
+    }
+
+    var rm = document.getElementById('redeemMsg'); rm.textContent = ''; rm.className = 'modal-msg';
+    document.getElementById('redeemText').style.display = 'none';
+    document.getElementById('redeemActions').style.display = 'none';
+  }
+
+  function requestRedeem(type) {
+    var u = currentUser(); var pts = balanceOf(u);
+    var rm  = document.getElementById('redeemMsg');
+    var ta  = document.getElementById('redeemText');
+    var act = document.getElementById('redeemActions');
+    if (pts < THRESHOLD) {
+      rm.textContent = '目前 ' + pts.toLocaleString() + ' 點，尚差 ' + (THRESHOLD - pts).toLocaleString() + ' 點才能兌換。';
+      rm.className = 'modal-msg err';
+      ta.style.display = 'none'; act.style.display = 'none';
+      return;
+    }
+    var way = (type === 'cash')
+      ? '現金折抵'
+      : '商品兌換（×1.25，可折抵約 ' + Math.round(pts * 1.25).toLocaleString() + ' 元商品額度）';
+    ta.value = ['【合一療癒・紅利兌換申請】',
+      '會員：' + u.name + '（帳號 ' + u.contact + '）',
+      '目前點數：' + pts.toLocaleString() + ' 點',
+      '兌換方式：' + way,
+      '申請時間：' + new Date().toLocaleString('zh-TW')].join('\n');
+    ta.style.display = 'block';
+    act.style.display = 'flex';
+    rm.textContent = '已整理好兌換申請，請複製後透過 Instagram 私訊傳給我們。';
+    rm.className = 'modal-msg ok';
+  }
+
+  (function () {
+    var rc = document.getElementById('redeemCash');
+    var rg = document.getElementById('redeemGoods');
+    var rcopy = document.getElementById('redeemCopy');
+    if (rc) rc.addEventListener('click', function () { requestRedeem('cash'); });
+    if (rg) rg.addEventListener('click', function () { requestRedeem('goods'); });
+    if (rcopy) rcopy.addEventListener('click', function () { copyText(document.getElementById('redeemText').value, rcopy, '複製申請'); });
+  })();
+
+  /* ============================================================
+     管理後台：發放／兌換紅利（密碼：ADMIN_PASSWORD）
+  ============================================================ */
+  function isAdmin() { try { return sessionStorage.getItem('uh_admin') === '1'; } catch (e) { return false; } }
+  function setAdminStatus(txt, type) { var el = document.getElementById('adminStatus'); if (!el) return; el.textContent = txt; el.className = 'admin-status' + (type ? ' ' + type : ''); }
+
+  function openAdmin() {
+    var gate = document.getElementById('adminGate');
+    var panel = document.getElementById('adminPanel');
+    var sub = document.getElementById('adminSub');
+    if (isAdmin()) {
+      gate.style.display = 'none'; panel.style.display = 'block';
+      sub.textContent = '發放與兌換會員紅利'; setAdminStatus(''); renderAdmin();
+    } else {
+      gate.style.display = 'block'; panel.style.display = 'none';
+      sub.textContent = '輸入管理密碼進入';
+      var gm = document.getElementById('adminGateMsg'); gm.textContent = ''; gm.className = 'modal-msg';
+      document.getElementById('adminPw').value = '';
+    }
+    adminOverlay.classList.add('show'); document.body.style.overflow = 'hidden';
+  }
+  function closeAdmin() { adminOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+
+  function renderAdmin() {
+    var users = getUsers();
+    document.getElementById('adminCount').textContent = users.length;
+    var wrap = document.getElementById('adminList');
+    if (!users.length) { wrap.innerHTML = '<p class="admin-empty">目前沒有會員資料。會員需在此瀏覽器註冊後才會出現。</p>'; return; }
+    wrap.innerHTML = '';
+    users.forEach(function (u) {
+      var bal = balanceOf(u);
+      var refs = u.referrals || [];
+      var names = refs.length ? refs.map(function (r) { return escHtml(r.friend); }).join('、') : '—';
+      var ledger = (u.ledger || []).slice().reverse();
+      var ledgerHtml = ledger.map(function (t) {
+        var grant = t.type === 'grant';
+        return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">' + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">' + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span></li>';
+      }).join('');
+      var card = document.createElement('div');
+      card.className = 'admin-card';
+      card.innerHTML =
+        '<div class="admin-card-top"><div><p class="admin-name">' + escHtml(u.name) + '</p><p class="admin-acct">帳號 ' + escHtml(u.contact) + '</p></div>'
+        + '<div class="admin-bal"><span>' + bal.toLocaleString() + '</span> 點</div></div>'
+        + '<p class="admin-refs">已推薦 ' + refs.length + ' 位：' + names + '</p>'
+        + '<div class="admin-controls">'
+        +   '<input type="number" min="1" class="admin-amount" placeholder="點數" aria-label="點數">'
+        +   '<input type="text" class="admin-note" placeholder="備註（選填）" aria-label="備註">'
+        +   '<button class="btn btn-primary btn-sm admin-grant" type="button">發放</button>'
+        +   '<button class="btn btn-ghost btn-sm admin-redeem" type="button">兌換</button>'
+        + '</div>'
+        + (ledgerHtml ? '<details class="admin-ledger"><summary>異動明細（' + ledger.length + '）</summary><ul>' + ledgerHtml + '</ul></details>' : '');
+      var amountEl = card.querySelector('.admin-amount');
+      var noteEl = card.querySelector('.admin-note');
+      var acct = u.contact;
+      card.querySelector('.admin-grant').addEventListener('click', function () { adminAdjust(acct, 'grant', amountEl, noteEl); });
+      card.querySelector('.admin-redeem').addEventListener('click', function () { adminAdjust(acct, 'redeem', amountEl, noteEl); });
+      wrap.appendChild(card);
+    });
+  }
+
+  function adminAdjust(account, type, amountEl, noteEl) {
+    var amt = parseInt(amountEl.value, 10);
+    if (!amt || amt <= 0) { setAdminStatus('請輸入正確的點數', 'err'); return; }
+    var users = getUsers();
+    var u = users.find(function (x) { return x.contact === account; });
+    if (!u) return;
+    u.ledger = u.ledger || [];
+    if (type === 'redeem' && balanceOf(u) < amt) { setAdminStatus(u.name + ' 點數不足（目前 ' + balanceOf(u).toLocaleString() + ' 點）', 'err'); return; }
+    u.ledger.push({ type: type, amount: amt, note: noteEl.value.trim(), date: new Date().toLocaleDateString('zh-TW') });
+    saveUsers(users);
+    var s = getSession(); if (s && s.contact === account) setSession(u);
+    renderAdmin();
+    setAdminStatus('已為 ' + u.name + (type === 'grant' ? ' 發放 ' : ' 兌換 ') + amt.toLocaleString() + ' 點，目前餘額 ' + balanceOf(u).toLocaleString() + ' 點', 'ok');
+  }
+
+  (function () {
+    var entry = document.getElementById('adminEntry');
+    var enter = document.getElementById('adminEnter');
+    var pwEl = document.getElementById('adminPw');
+    var logout = document.getElementById('adminLogout');
+    if (entry) entry.addEventListener('click', openAdmin);
+    if (adminClose) adminClose.addEventListener('click', closeAdmin);
+    if (adminOverlay) adminOverlay.addEventListener('click', function (e) { if (e.target === adminOverlay) closeAdmin(); });
+    function tryEnter() {
+      var msg = document.getElementById('adminGateMsg');
+      if (pwEl.value === ADMIN_PASSWORD) { try { sessionStorage.setItem('uh_admin', '1'); } catch (e) {} openAdmin(); }
+      else { msg.textContent = '密碼不正確'; msg.className = 'modal-msg err'; }
+    }
+    if (enter) enter.addEventListener('click', tryEnter);
+    if (pwEl) pwEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryEnter(); });
+    if (logout) logout.addEventListener('click', function () { try { sessionStorage.removeItem('uh_admin'); } catch (e) {} openAdmin(); });
+  })();
+
+  /* ──────── 表單送出 ──────── */
+  var form        = document.getElementById('referralForm');
+  var statusEl    = document.getElementById('formStatus');
+  var fallbackBox = document.getElementById('fallbackBox');
+  var fallbackText= document.getElementById('fallbackText');
+  var copyBtn     = document.getElementById('copyBtn');
+
+  function setStatus(m, t) { statusEl.textContent = m; statusEl.className = 'form-status' + (t ? ' ' + t : ''); }
+
+  function isConfigured() {
+    return ['publicKey','serviceId','templateId'].every(function (k) {
+      var v = EMAILJS_CONFIG[k]; return v && v.indexOf('YOUR_') !== 0;
+    });
+  }
+
+  function loadEmailJS() {
+    return new Promise(function (resolve, reject) {
+      if (window.emailjs) { resolve(); return; }
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function collectData() {
+    var user = getSession();
+    return {
+      ref_name:       user ? user.name    : '（未登入）',
+      ref_contact:    user ? user.contact : '（未登入）',
+      friend_name:    form.friendName.value.trim(),
+      friend_contact: form.friendContact.value.trim() || '（未填）',
+      service:        form.service.value || '（未選擇）',
+      message:        form.message.value.trim() || '（無）',
+      page_url:       location.href,
+      sent_at:        new Date().toLocaleString('zh-TW')
+    };
+  }
+
+  function buildSummary(d) {
+    return ['【合一療癒・轉介紹登記】',
+      '介紹人姓名：' + d.ref_name,
+      '介紹人帳號：' + d.ref_contact,
+      '好友姓名：'   + d.friend_name,
+      '好友聯絡：'   + d.friend_contact,
+      '想了解的服務：' + d.service,
+      '備註：'       + d.message,
+      '登記時間：'   + d.sent_at].join('\n');
+  }
+
+  function showFallback(d) {
+    fallbackText.value = buildSummary(d);
+    fallbackBox.classList.add('show');
+    setStatus('已整理好登記內容，複製後以 Instagram 私訊傳給我們即可。', 'ok');
+    fallbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  copyBtn.addEventListener('click', function () {
+    var text = fallbackText.value;
+    function done() { copyBtn.textContent = '已複製！'; setTimeout(function () { copyBtn.textContent = '複製內容'; }, 2000); }
+    function legacy() { fallbackText.focus(); fallbackText.select(); try { document.execCommand('copy'); done(); } catch(e){} }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!getSession()) { openModal(); return; }
+    if (form.website.value) { setStatus('已收到您的登記，謝謝您！', 'ok'); form.reset(); return; }
+    if (!form.friendName.value.trim()) { setStatus('請填寫好友姓名', 'err'); form.friendName.focus(); return; }
+
+    var data = collectData();
+    recordReferral(data);
+    if (!isConfigured()) { showFallback(data); return; }
+
+    submitBtn.disabled = true;
+    setStatus('送出中…');
+    loadEmailJS()
+      .then(function () {
+        window.emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+        return window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, data);
+      })
+      .then(function () {
+        setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫。', 'ok');
+        fallbackBox.classList.remove('show');
+        form.reset();
+        submitBtn.disabled = false;
+      })
+      .catch(function () {
+        showFallback(data);
+        submitBtn.disabled = false;
+      });
+  });
+
+  /* 以 .../referral.html#admin 連結可直接開啟後台 */
+  if (location.hash === '#admin') openAdmin();
+  window.addEventListener('hashchange', function () { if (location.hash === '#admin') openAdmin(); });
+})();
+</script>
+</body>
+</html>
