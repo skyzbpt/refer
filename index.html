@@ -8,11 +8,12 @@
 
 <!-- ============================================================
   ✏️ 快速編輯指南（給站主）
+  0. Firebase 設定：搜尋「✏️ FIREBASE_CONFIG」（必填，資料庫與登入功能）
   1. 紅利點數（每位 500 點／1,500 點兌換／×1.25）：搜尋「✏️ 回饋內容」「✏️ 兌換方式」
   2. 級距加碼（3／5／10 位與加贈點數）：搜尋「✏️ 級距」
   3. 表單服務選項：搜尋「✏️ 服務選項」
   4. 聯絡資訊（Instagram）：搜尋「✏️ 聯絡資訊」
-  5. EmailJS 設定：搜尋「✏️ EMAILJS_CONFIG」
+  5. EmailJS 設定：搜尋「✏️ EMAILJS_CONFIG」（選填，用於自動寄信）
      （未設定時，表單會顯示「複製登記內容」備援面板，不會跳離頁面）
   6. 主題色：搜尋「:root」即可一次調整整體配色
 ============================================================ -->
@@ -805,8 +806,8 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
       <div class="tab-panel active" id="panel-login">
         <p class="modal-msg" id="loginMsg"></p>
         <div class="mfield">
-          <label for="loginId">帳號</label>
-          <input type="text" id="loginId" placeholder="請輸入您的帳號">
+          <label for="loginId">Email</label>
+          <input type="email" id="loginId" autocomplete="email" placeholder="請輸入您的 Email">
         </div>
         <div class="mfield">
           <label for="loginPw">密碼</label>
@@ -821,8 +822,8 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
           <input type="text" id="regName" placeholder="介紹人姓名">
         </div>
         <div class="mfield">
-          <label for="regId">帳號<span class="req">＊</span></label>
-          <input type="text" id="regId" placeholder="設定登入帳號，需唯一">
+          <label for="regId">Email<span class="req">＊</span></label>
+          <input type="email" id="regId" autocomplete="email" placeholder="您的 Email 信箱">
         </div>
         <div class="mfield">
           <label for="regPw">設定密碼<span class="req">＊</span></label>
@@ -879,7 +880,7 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
         </div>
       </div>
 
-      <p class="member-note">點數於好友完成首次體驗後由管理員確認發放；推薦紀錄儲存於此裝置瀏覽器，實際點數與兌換結果以官方紀錄為準。</p>
+      <p class="member-note">點數於好友完成首次體驗後由管理員確認發放；推薦紀錄與點數資料儲存於 Firebase 雲端，可跨裝置登入查看；實際點數與兌換結果以官方紀錄為準。</p>
     </div>
   </div>
 </div>
@@ -910,7 +911,7 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
         </div>
         <p class="admin-status" id="adminStatus"></p>
         <div id="adminList"></div>
-        <p class="member-note">於各會員欄位輸入點數後，按「發放」增加紅利、按「兌換」扣除紅利（兌換不可超過餘額）。資料儲存於此瀏覽器，僅顯示在此裝置註冊的會員。</p>
+        <p class="member-note">於各會員欄位輸入點數後，按「發放」增加紅利、按「兌換」扣除紅利（兌換不可超過餘額）。資料儲存於 Firebase 雲端；管理員需先以任一會員帳號登入，再輸入管理密碼。</p>
       </div>
     </div>
   </div>
@@ -948,9 +949,39 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
   </div>
 </footer>
 
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 <script>
 /* ============================================================
-   ✏️ EMAILJS_CONFIG：填入您的 EmailJS 金鑰後，表單將直接寄送
+   ✏️ FIREBASE_CONFIG：填入您的 Firebase 專案設定
+   1. 前往 https://console.firebase.google.com/ 建立或選擇專案
+   2. 專案設定 → 新增 Web 應用程式 → 複製 firebaseConfig 貼入下方
+   3. 啟用 Authentication → 登入方式 → 電子郵件／密碼
+   4. 建立 Firestore Database，安全規則（Firestore → 規則）設為：
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /users/{uid} {
+            allow read, write: if request.auth != null;
+          }
+        }
+      }
+      （管理後台需以任一會員帳號登入後才能修改點數）
+============================================================ */
+var FIREBASE_CONFIG = {
+  apiKey:            'YOUR_API_KEY',
+  authDomain:        'YOUR_PROJECT_ID.firebaseapp.com',
+  projectId:         'YOUR_PROJECT_ID',
+  storageBucket:     'YOUR_PROJECT_ID.appspot.com',
+  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  appId:             'YOUR_APP_ID'
+};
+
+/* ============================================================
+   ✏️ EMAILJS_CONFIG：選填，用於自動寄送轉介紹通知信
    （三個值任一保持 YOUR_ 開頭時，送出會顯示「複製內容」備援面板，
      不會跳轉、不會離開本頁）
 ============================================================ */
@@ -960,7 +991,19 @@ var EMAILJS_CONFIG = {
   templateId: 'YOUR_TEMPLATE_ID'
 };
 var IG_URL = 'https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr';
-var ADMIN_PASSWORD = '318'; /* ✏️ 後台管理密碼。注意：寫在前端，檢視原始碼即可看到，僅適合低敏感度的內部使用。 */
+var ADMIN_PASSWORD = '318'; /* ✏️ 後台管理密碼（client 端明碼，僅適合低敏感度內部使用） */
+var THRESHOLD = 1500;       /* ✏️ 兌換門檻點數 */
+
+/* ---------- Firebase 初始化 ---------- */
+function isFirebaseConfigured() {
+  return Object.values(FIREBASE_CONFIG).every(function(v) { return v && v.indexOf('YOUR_') !== 0; });
+}
+var db, auth;
+if (isFirebaseConfigured()) {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db   = firebase.firestore();
+  auth = firebase.auth();
+}
 
 /* ---------- 年份 ---------- */
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -1022,16 +1065,37 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
 });
 
 /* ============================================================
-   帳號系統（localStorage）
+   工具函數
+============================================================ */
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function copyText(text, btn, label) {
+  function done() { btn.textContent = '已複製！'; setTimeout(function() { btn.textContent = label; }, 2000); }
+  function legacy() { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch(e){} document.body.removeChild(ta); }
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
+}
+function balanceOf(u) {
+  var bal = 0;
+  (u && u.ledger ? u.ledger : []).forEach(function(t) { bal += t.type === 'grant' ? t.amount : -t.amount; });
+  return bal;
+}
+
+/* ============================================================
+   帳號系統（Firebase Auth + Firestore）
 ============================================================ */
 (function () {
-  function getUsers() { try { return JSON.parse(localStorage.getItem('uh_users') || '[]'); } catch(e){ return []; } }
-  function saveUsers(u) { localStorage.setItem('uh_users', JSON.stringify(u)); }
-  function getSession() { try { return JSON.parse(localStorage.getItem('uh_session') || 'null'); } catch(e){ return null; } }
-  function setSession(u) { localStorage.setItem('uh_session', JSON.stringify(u)); }
-  function clearSession() { localStorage.removeItem('uh_session'); }
+  if (!isFirebaseConfigured()) {
+    var loginNoticeField = document.getElementById('loginNoticeField');
+    if (loginNoticeField) loginNoticeField.style.display = 'block';
+    var submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) submitBtn.disabled = true;
+    return;
+  }
 
-  var navLoginBtn   = document.getElementById('navLoginBtn');
+  /* ── DOM 參照 ── */
   var overlay       = document.getElementById('modalOverlay');
   var modalClose    = document.getElementById('modalClose');
   var loginNotice   = document.getElementById('loginNoticeField');
@@ -1045,209 +1109,69 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
   var adminOverlay  = document.getElementById('adminOverlay');
   var adminClose    = document.getElementById('adminClose');
 
-  function syncNav() {
-    var user = getSession();
-    if (user) {
-      var nb = document.getElementById('navLoginBtn');
-      if (nb) {
-        var div = document.createElement('div');
-        div.className = 'nav-user'; div.id = 'navUser';
-        div.innerHTML = '<button class="uname uname-btn" type="button" id="memberBtn">' + escHtml(user.name) + '</button><button class="logout-btn" type="button" id="logoutBtn">登出</button>';
-        nb.parentNode.replaceChild(div, nb);
-        document.getElementById('logoutBtn').addEventListener('click', function () { clearSession(); location.reload(); });
-        var mbtn = document.getElementById('memberBtn');
-        if (mbtn) mbtn.addEventListener('click', openMember);
-      }
+  var _userData = null; // 目前登入的 Firestore 使用者資料快取
+  submitBtn.disabled = true; // 未確認登入前鎖定
+
+  /* ── 導覽列 & 表單狀態同步 ── */
+  function renderNav(user, data) {
+    var navLinks = document.querySelector('.nav-links');
+    var slot = document.getElementById('navUser') || document.getElementById('navLoginBtn');
+    if (user && data) {
+      var div = document.createElement('div');
+      div.className = 'nav-user'; div.id = 'navUser';
+      div.innerHTML = '<button class="uname uname-btn" type="button" id="memberBtn">'
+        + escHtml(data.name) + '</button>'
+        + '<button class="logout-btn" type="button" id="logoutBtn">登出</button>';
+      if (slot) navLinks.replaceChild(div, slot);
+      document.getElementById('logoutBtn').addEventListener('click', function() { auth.signOut(); });
+      document.getElementById('memberBtn').addEventListener('click', openMember);
       loginNotice.style.display = 'none';
       refPreview.style.display  = 'flex';
-      refPreviewVal.textContent = user.name + '　' + user.contact;
+      refPreviewVal.textContent = data.name + '　' + user.email;
       submitBtn.disabled = false;
     } else {
+      var btn = document.createElement('button');
+      btn.className = 'btn btn-ghost btn-sm nav-login'; btn.id = 'navLoginBtn';
+      btn.type = 'button'; btn.textContent = '登入／註冊';
+      btn.addEventListener('click', openModal);
+      if (slot) navLinks.replaceChild(btn, slot);
       loginNotice.style.display = 'block';
       refPreview.style.display  = 'none';
       submitBtn.disabled = true;
     }
   }
-  syncNav();
 
+  /* ── Auth 狀態監聽 ── */
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      db.collection('users').doc(user.uid).get()
+        .then(function(doc) {
+          if (doc.exists) { _userData = doc.data(); renderNav(user, _userData); }
+          else { auth.signOut(); }
+        })
+        .catch(function() { renderNav(null, null); });
+    } else {
+      _userData = null;
+      renderNav(null, null);
+    }
+  });
+
+  /* ── Modal 開關 ── */
   function openModal()  { overlay.classList.add('show');    document.body.style.overflow = 'hidden'; }
   function closeModal() { overlay.classList.remove('show'); document.body.style.overflow = ''; }
-  function openMember() { renderMember(); memberOverlay.classList.add('show'); document.body.style.overflow = 'hidden'; }
-  function closeMember(){ memberOverlay.classList.remove('show'); document.body.style.overflow = ''; }
-
-  if (navLoginBtn)   navLoginBtn.addEventListener('click',  openModal);
-  if (formLoginBtn)  formLoginBtn.addEventListener('click', openModal);
-  if (modalClose)    modalClose.addEventListener('click',   closeModal);
-  if (openMemberBtn) openMemberBtn.addEventListener('click', openMember);
-  if (memberClose)   memberClose.addEventListener('click',  closeMember);
-  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
-  memberOverlay.addEventListener('click', function (e) { if (e.target === memberOverlay) closeMember(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); } });
-
-  document.querySelectorAll('.tab-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
-      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
-      btn.classList.add('active');
-      document.getElementById('panel-' + btn.getAttribute('data-tab')).classList.add('active');
-    });
-  });
-
-  document.getElementById('regSubmit').addEventListener('click', function () {
-    var name    = document.getElementById('regName').value.trim();
-    var contact = document.getElementById('regId').value.trim();
-    var pw      = document.getElementById('regPw').value;
-    var msg     = document.getElementById('regMsg');
-    if (!name)         { showMsg(msg, '請填寫姓名', 'err'); return; }
-    if (!contact)      { showMsg(msg, '請填寫帳號', 'err'); return; }
-    if (pw.length < 6) { showMsg(msg, '密碼至少 6 個字元', 'err'); return; }
-    var users = getUsers();
-    if (users.find(function (u) { return u.contact === contact; })) {
-      showMsg(msg, '此聯絡方式已有帳號，請直接登入', 'err'); return;
-    }
-    var user = { name: name, contact: contact, pw: simpleHash(pw) };
-    users.push(user); saveUsers(users); setSession(user);
-    showMsg(msg, '帳號建立成功！', 'ok');
-    setTimeout(function () { closeModal(); syncNav(); }, 800);
-  });
-
-  document.getElementById('loginSubmit').addEventListener('click', function () {
-    var contact = document.getElementById('loginId').value.trim();
-    var pw      = document.getElementById('loginPw').value;
-    var msg     = document.getElementById('loginMsg');
-    if (!contact || !pw) { showMsg(msg, '請填寫帳號與密碼', 'err'); return; }
-    var users = getUsers();
-    var user = users.find(function (u) { return u.contact === contact && u.pw === simpleHash(pw); });
-    if (!user) { showMsg(msg, '帳號或密碼不正確', 'err'); return; }
-    setSession(user);
-    showMsg(msg, '登入成功！', 'ok');
-    setTimeout(function () { closeModal(); syncNav(); }, 600);
-  });
-
-  function showMsg(el, txt, type) { el.textContent = txt; el.className = 'modal-msg ' + type; }
-  function escHtml(s) { return s.replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-  function simpleHash(s) {
-    var h = 0x811c9dc5;
-    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
-    return h.toString(16);
+  function openMember() {
+    var rm = document.getElementById('redeemMsg'); if (rm) { rm.textContent = ''; rm.className = 'modal-msg'; }
+    var rt = document.getElementById('redeemText'); if (rt) rt.style.display = 'none';
+    var ra = document.getElementById('redeemActions'); if (ra) ra.style.display = 'none';
+    renderMember();
+    memberOverlay.classList.add('show'); document.body.style.overflow = 'hidden';
   }
-
-  /* ============================================================
-     會員中心 + 後台：點數餘額由「管理員發放／兌換」的異動明細計算
-  ============================================================ */
-  var THRESHOLD = 1500; /* ✏️ 兌換門檻點數 */
-
-  function currentUser() {
-    var s = getSession(); if (!s) return null;
-    var us = getUsers();
-    return us.find(function (u) { return u.contact === s.contact; }) || s;
-  }
-  /* 餘額＝發放總和 − 兌換總和 */
-  function balanceOf(u) {
-    var bal = 0;
-    (u && u.ledger ? u.ledger : []).forEach(function (t) { bal += (t.type === 'grant' ? t.amount : -t.amount); });
-    return bal;
-  }
-  function copyText(text, btn, label) {
-    function done() { btn.textContent = '已複製！'; setTimeout(function () { btn.textContent = label; }, 2000); }
-    function legacy() { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} document.body.removeChild(ta); }
-    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
-  }
-
-  /* 記錄一筆推薦到登入會員 */
-  function recordReferral(d) {
-    var s = getSession(); if (!s) return;
-    var users = getUsers();
-    var u = users.find(function (x) { return x.contact === s.contact; });
-    if (!u) return;
-    u.referrals = u.referrals || [];
-    var svc = (d.service && d.service.indexOf('（') === 0) ? '' : d.service;
-    u.referrals.push({ friend: d.friend_name, service: svc, date: new Date().toLocaleDateString('zh-TW') });
-    saveUsers(users); setSession(u);
-  }
-
-  function renderMember() {
-    var u = currentUser(); if (!u) return;
-    var pts = balanceOf(u);
-    document.getElementById('memberHello').textContent = '你好，' + u.name;
-    document.getElementById('pointsNum').textContent = pts.toLocaleString();
-    document.getElementById('pointsBarFill').style.width = Math.min(Math.max(pts, 0) / THRESHOLD * 100, 100) + '%';
-    document.getElementById('pointsHint').textContent =
-      pts >= THRESHOLD ? '已達兌換門檻，可申請兌換！' : ('再累積 ' + Math.max(THRESHOLD - pts, 0).toLocaleString() + ' 點即可兌換');
-
-    var list = document.getElementById('refList');
-    var refs = u.referrals || [];
-    if (!refs.length) {
-      list.innerHTML = '<li class="ref-empty">目前還沒有推薦紀錄，邀請好友即可開始累積紅利。</li>';
-    } else {
-      list.innerHTML = refs.map(function (r) {
-        var meta = [r.service, r.date].filter(Boolean).join('・');
-        return '<li><span class="rf-name">' + escHtml(r.friend) + '</span><span class="rf-meta">' + escHtml(meta) + '</span></li>';
-      }).join('');
-    }
-
-    var led = document.getElementById('memberLedger');
-    var lg = (u.ledger || []).slice().reverse();
-    if (!lg.length) {
-      led.innerHTML = '<li class="ref-empty">尚無點數異動，待管理員確認發放。</li>';
-    } else {
-      led.innerHTML = lg.map(function (t) {
-        var grant = t.type === 'grant';
-        var note = t.note || (grant ? '紅利發放' : '紅利兌換');
-        return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">' + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">' + escHtml(note) + '・' + t.date + '</span></li>';
-      }).join('');
-    }
-
-    var rm = document.getElementById('redeemMsg'); rm.textContent = ''; rm.className = 'modal-msg';
-    document.getElementById('redeemText').style.display = 'none';
-    document.getElementById('redeemActions').style.display = 'none';
-  }
-
-  function requestRedeem(type) {
-    var u = currentUser(); var pts = balanceOf(u);
-    var rm  = document.getElementById('redeemMsg');
-    var ta  = document.getElementById('redeemText');
-    var act = document.getElementById('redeemActions');
-    if (pts < THRESHOLD) {
-      rm.textContent = '目前 ' + pts.toLocaleString() + ' 點，尚差 ' + (THRESHOLD - pts).toLocaleString() + ' 點才能兌換。';
-      rm.className = 'modal-msg err';
-      ta.style.display = 'none'; act.style.display = 'none';
-      return;
-    }
-    var way = (type === 'cash')
-      ? '現金折抵'
-      : '商品兌換（×1.25，可折抵約 ' + Math.round(pts * 1.25).toLocaleString() + ' 元商品額度）';
-    ta.value = ['【合一療癒・紅利兌換申請】',
-      '會員：' + u.name + '（帳號 ' + u.contact + '）',
-      '目前點數：' + pts.toLocaleString() + ' 點',
-      '兌換方式：' + way,
-      '申請時間：' + new Date().toLocaleString('zh-TW')].join('\n');
-    ta.style.display = 'block';
-    act.style.display = 'flex';
-    rm.textContent = '已整理好兌換申請，請複製後透過 Instagram 私訊傳給我們。';
-    rm.className = 'modal-msg ok';
-  }
-
-  (function () {
-    var rc = document.getElementById('redeemCash');
-    var rg = document.getElementById('redeemGoods');
-    var rcopy = document.getElementById('redeemCopy');
-    if (rc) rc.addEventListener('click', function () { requestRedeem('cash'); });
-    if (rg) rg.addEventListener('click', function () { requestRedeem('goods'); });
-    if (rcopy) rcopy.addEventListener('click', function () { copyText(document.getElementById('redeemText').value, rcopy, '複製申請'); });
-  })();
-
-  /* ============================================================
-     管理後台：發放／兌換紅利（密碼：ADMIN_PASSWORD）
-  ============================================================ */
-  function isAdmin() { try { return sessionStorage.getItem('uh_admin') === '1'; } catch (e) { return false; } }
-  function setAdminStatus(txt, type) { var el = document.getElementById('adminStatus'); if (!el) return; el.textContent = txt; el.className = 'admin-status' + (type ? ' ' + type : ''); }
-
+  function closeMember() { memberOverlay.classList.remove('show'); document.body.style.overflow = ''; }
   function openAdmin() {
-    var gate = document.getElementById('adminGate');
+    var gate  = document.getElementById('adminGate');
     var panel = document.getElementById('adminPanel');
-    var sub = document.getElementById('adminSub');
-    if (isAdmin()) {
+    var sub   = document.getElementById('adminSub');
+    if (isAdminSession()) {
       gate.style.display = 'none'; panel.style.display = 'block';
       sub.textContent = '發放與兌換會員紅利'; setAdminStatus(''); renderAdmin();
     } else {
@@ -1260,93 +1184,241 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
   }
   function closeAdmin() { adminOverlay.classList.remove('show'); document.body.style.overflow = ''; }
 
-  function renderAdmin() {
-    var users = getUsers();
-    document.getElementById('adminCount').textContent = users.length;
-    var wrap = document.getElementById('adminList');
-    if (!users.length) { wrap.innerHTML = '<p class="admin-empty">目前沒有會員資料。會員需在此瀏覽器註冊後才會出現。</p>'; return; }
-    wrap.innerHTML = '';
-    users.forEach(function (u) {
-      var bal = balanceOf(u);
+  if (formLoginBtn)  formLoginBtn.addEventListener('click', openModal);
+  if (modalClose)    modalClose.addEventListener('click', closeModal);
+  if (openMemberBtn) openMemberBtn.addEventListener('click', openMember);
+  if (memberClose)   memberClose.addEventListener('click', closeMember);
+  if (adminClose)    adminClose.addEventListener('click', closeAdmin);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
+  memberOverlay.addEventListener('click', function(e) { if (e.target === memberOverlay) closeMember(); });
+  adminOverlay.addEventListener('click', function(e) { if (e.target === adminOverlay) closeAdmin(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); } });
+
+  /* ── 分頁切換 ── */
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.getAttribute('data-tab')).classList.add('active');
+    });
+  });
+
+  function showMsg(el, txt, type) { el.textContent = txt; el.className = 'modal-msg' + (type ? ' ' + type : ''); }
+
+  /* ── 建立帳號 ── */
+  document.getElementById('regSubmit').addEventListener('click', function() {
+    var name  = document.getElementById('regName').value.trim();
+    var email = document.getElementById('regId').value.trim();
+    var pw    = document.getElementById('regPw').value;
+    var msg   = document.getElementById('regMsg');
+    if (!name)         { showMsg(msg, '請填寫姓名', 'err'); return; }
+    if (!email)        { showMsg(msg, '請填寫 Email', 'err'); return; }
+    if (pw.length < 6) { showMsg(msg, '密碼至少 6 個字元', 'err'); return; }
+    showMsg(msg, '建立中…', '');
+    auth.createUserWithEmailAndPassword(email, pw)
+      .then(function(cred) {
+        return db.collection('users').doc(cred.user.uid).set({
+          name: name, email: email, uid: cred.user.uid,
+          referrals: [], ledger: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      })
+      .then(function() { showMsg(msg, '帳號建立成功！', 'ok'); setTimeout(closeModal, 800); })
+      .catch(function(err) {
+        var m = err.code === 'auth/email-already-in-use' ? '此 Email 已有帳號，請直接登入'
+              : err.code === 'auth/invalid-email'        ? 'Email 格式不正確'
+              : '建立失敗：' + err.message;
+        showMsg(msg, m, 'err');
+      });
+  });
+
+  /* ── 登入 ── */
+  document.getElementById('loginSubmit').addEventListener('click', function() {
+    var email = document.getElementById('loginId').value.trim();
+    var pw    = document.getElementById('loginPw').value;
+    var msg   = document.getElementById('loginMsg');
+    if (!email || !pw) { showMsg(msg, '請填寫 Email 與密碼', 'err'); return; }
+    showMsg(msg, '登入中…', '');
+    auth.signInWithEmailAndPassword(email, pw)
+      .then(function() { showMsg(msg, '登入成功！', 'ok'); setTimeout(closeModal, 600); })
+      .catch(function(err) {
+        var m = (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential')
+              ? 'Email 或密碼不正確'
+              : '登入失敗：' + err.message;
+        showMsg(msg, m, 'err');
+      });
+  });
+
+  /* ── 會員中心渲染 ── */
+  function renderMember() {
+    var user = auth.currentUser; if (!user) return;
+    document.getElementById('memberHello').textContent = '載入中…';
+    db.collection('users').doc(user.uid).get().then(function(doc) {
+      if (!doc.exists) return;
+      var u = doc.data();
+      var pts = balanceOf(u);
+      document.getElementById('memberHello').textContent = '你好，' + u.name;
+      document.getElementById('pointsNum').textContent = pts.toLocaleString();
+      document.getElementById('pointsBarFill').style.width = Math.min(Math.max(pts, 0) / THRESHOLD * 100, 100) + '%';
+      document.getElementById('pointsHint').textContent =
+        pts >= THRESHOLD ? '已達兌換門檻，可申請兌換！' : ('再累積 ' + Math.max(THRESHOLD - pts, 0).toLocaleString() + ' 點即可兌換');
+
       var refs = u.referrals || [];
-      var names = refs.length ? refs.map(function (r) { return escHtml(r.friend); }).join('、') : '—';
-      var ledger = (u.ledger || []).slice().reverse();
-      var ledgerHtml = ledger.map(function (t) {
-        var grant = t.type === 'grant';
-        return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">' + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">' + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span></li>';
-      }).join('');
-      var card = document.createElement('div');
-      card.className = 'admin-card';
-      card.innerHTML =
-        '<div class="admin-card-top"><div><p class="admin-name">' + escHtml(u.name) + '</p><p class="admin-acct">帳號 ' + escHtml(u.contact) + '</p></div>'
-        + '<div class="admin-bal"><span>' + bal.toLocaleString() + '</span> 點</div></div>'
-        + '<p class="admin-refs">已推薦 ' + refs.length + ' 位：' + names + '</p>'
-        + '<div class="admin-controls">'
-        +   '<input type="number" min="1" class="admin-amount" placeholder="點數" aria-label="點數">'
-        +   '<input type="text" class="admin-note" placeholder="備註（選填）" aria-label="備註">'
-        +   '<button class="btn btn-primary btn-sm admin-grant" type="button">發放</button>'
-        +   '<button class="btn btn-ghost btn-sm admin-redeem" type="button">兌換</button>'
-        + '</div>'
-        + (ledgerHtml ? '<details class="admin-ledger"><summary>異動明細（' + ledger.length + '）</summary><ul>' + ledgerHtml + '</ul></details>' : '');
-      var amountEl = card.querySelector('.admin-amount');
-      var noteEl = card.querySelector('.admin-note');
-      var acct = u.contact;
-      card.querySelector('.admin-grant').addEventListener('click', function () { adminAdjust(acct, 'grant', amountEl, noteEl); });
-      card.querySelector('.admin-redeem').addEventListener('click', function () { adminAdjust(acct, 'redeem', amountEl, noteEl); });
-      wrap.appendChild(card);
+      document.getElementById('refList').innerHTML = refs.length
+        ? refs.map(function(r) {
+            var meta = [r.service, r.date].filter(Boolean).join('・');
+            return '<li><span class="rf-name">' + escHtml(r.friend) + '</span><span class="rf-meta">' + escHtml(meta) + '</span></li>';
+          }).join('')
+        : '<li class="ref-empty">目前還沒有推薦紀錄，邀請好友即可開始累積紅利。</li>';
+
+      var lg = (u.ledger || []).slice().reverse();
+      document.getElementById('memberLedger').innerHTML = lg.length
+        ? lg.map(function(t) {
+            var grant = t.type === 'grant';
+            var note = t.note || (grant ? '紅利發放' : '紅利兌換');
+            return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">'
+              + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">'
+              + escHtml(note) + '・' + t.date + '</span></li>';
+          }).join('')
+        : '<li class="ref-empty">尚無點數異動，待管理員確認發放。</li>';
+
+      window._memberSnap = { u: u, pts: pts };
     });
   }
 
-  function adminAdjust(account, type, amountEl, noteEl) {
-    var amt = parseInt(amountEl.value, 10);
-    if (!amt || amt <= 0) { setAdminStatus('請輸入正確的點數', 'err'); return; }
-    var users = getUsers();
-    var u = users.find(function (x) { return x.contact === account; });
-    if (!u) return;
-    u.ledger = u.ledger || [];
-    if (type === 'redeem' && balanceOf(u) < amt) { setAdminStatus(u.name + ' 點數不足（目前 ' + balanceOf(u).toLocaleString() + ' 點）', 'err'); return; }
-    u.ledger.push({ type: type, amount: amt, note: noteEl.value.trim(), date: new Date().toLocaleDateString('zh-TW') });
-    saveUsers(users);
-    var s = getSession(); if (s && s.contact === account) setSession(u);
-    renderAdmin();
-    setAdminStatus('已為 ' + u.name + (type === 'grant' ? ' 發放 ' : ' 兌換 ') + amt.toLocaleString() + ' 點，目前餘額 ' + balanceOf(u).toLocaleString() + ' 點', 'ok');
+  /* ── 兌換紅利 ── */
+  function requestRedeem(type) {
+    var snap = window._memberSnap;
+    var pts  = snap ? snap.pts : 0;
+    var rm   = document.getElementById('redeemMsg');
+    var ta   = document.getElementById('redeemText');
+    var act  = document.getElementById('redeemActions');
+    if (!snap || pts < THRESHOLD) {
+      rm.textContent = '目前 ' + pts.toLocaleString() + ' 點，尚差 ' + Math.max(THRESHOLD - pts, 0).toLocaleString() + ' 點才能兌換。';
+      rm.className = 'modal-msg err';
+      ta.style.display = 'none'; act.style.display = 'none';
+      return;
+    }
+    var u   = snap.u;
+    var way = type === 'cash' ? '現金折抵'
+      : '商品兌換（×1.25，可折抵約 ' + Math.round(pts * 1.25).toLocaleString() + ' 元商品額度）';
+    ta.value = ['【合一療癒・紅利兌換申請】',
+      '會員：' + u.name + '（' + u.email + '）',
+      '目前點數：' + pts.toLocaleString() + ' 點',
+      '兌換方式：' + way,
+      '申請時間：' + new Date().toLocaleString('zh-TW')].join('\n');
+    ta.style.display = 'block'; act.style.display = 'flex';
+    rm.textContent = '已整理好兌換申請，請複製後透過 Instagram 私訊傳給我們。';
+    rm.className = 'modal-msg ok';
   }
 
-  (function () {
-    var entry = document.getElementById('adminEntry');
-    var enter = document.getElementById('adminEnter');
-    var pwEl = document.getElementById('adminPw');
+  document.getElementById('redeemCash').addEventListener('click',  function() { requestRedeem('cash'); });
+  document.getElementById('redeemGoods').addEventListener('click', function() { requestRedeem('goods'); });
+  document.getElementById('redeemCopy').addEventListener('click',  function() {
+    copyText(document.getElementById('redeemText').value, document.getElementById('redeemCopy'), '複製申請');
+  });
+
+  /* ── 管理後台 ── */
+  function isAdminSession() { try { return sessionStorage.getItem('uh_admin') === '1'; } catch(e) { return false; } }
+  function setAdminStatus(txt, type) {
+    var el = document.getElementById('adminStatus'); if (!el) return;
+    el.textContent = txt; el.className = 'admin-status' + (type ? ' ' + type : '');
+  }
+
+  function renderAdmin() {
+    var wrap = document.getElementById('adminList');
+    wrap.innerHTML = '<p class="admin-empty">載入中…</p>';
+    db.collection('users').get().then(function(snapshot) {
+      document.getElementById('adminCount').textContent = snapshot.size;
+      if (snapshot.empty) { wrap.innerHTML = '<p class="admin-empty">目前沒有會員資料。</p>'; return; }
+      wrap.innerHTML = '';
+      snapshot.forEach(function(docSnap) {
+        var u   = docSnap.data();
+        var uid = docSnap.id;
+        var bal = balanceOf(u);
+        var refs = u.referrals || [];
+        var names = refs.length ? refs.map(function(r) { return escHtml(r.friend); }).join('、') : '—';
+        var ledger = (u.ledger || []).slice().reverse();
+        var ledgerHtml = ledger.map(function(t) {
+          var grant = t.type === 'grant';
+          return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">'
+            + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">'
+            + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span></li>';
+        }).join('');
+        var card = document.createElement('div');
+        card.className = 'admin-card';
+        card.innerHTML =
+          '<div class="admin-card-top"><div><p class="admin-name">' + escHtml(u.name)
+          + '</p><p class="admin-acct">' + escHtml(u.email) + '</p></div>'
+          + '<div class="admin-bal"><span>' + bal.toLocaleString() + '</span> 點</div></div>'
+          + '<p class="admin-refs">已推薦 ' + refs.length + ' 位：' + names + '</p>'
+          + '<div class="admin-controls">'
+          +   '<input type="number" min="1" class="admin-amount" placeholder="點數" aria-label="點數">'
+          +   '<input type="text" class="admin-note" placeholder="備註（選填）" aria-label="備註">'
+          +   '<button class="btn btn-primary btn-sm admin-grant" type="button">發放</button>'
+          +   '<button class="btn btn-ghost btn-sm admin-redeem" type="button">兌換</button>'
+          + '</div>'
+          + (ledgerHtml ? '<details class="admin-ledger"><summary>異動明細（' + ledger.length + '）</summary><ul>' + ledgerHtml + '</ul></details>' : '');
+        var amountEl = card.querySelector('.admin-amount');
+        var noteEl   = card.querySelector('.admin-note');
+        card.querySelector('.admin-grant').addEventListener('click', function() { adminAdjust(uid, u.name, bal, 'grant', amountEl, noteEl); });
+        card.querySelector('.admin-redeem').addEventListener('click', function() { adminAdjust(uid, u.name, bal, 'redeem', amountEl, noteEl); });
+        wrap.appendChild(card);
+      });
+    }).catch(function(err) { wrap.innerHTML = '<p class="admin-empty">載入失敗：' + err.message + '</p>'; });
+  }
+
+  function adminAdjust(uid, name, currentBal, type, amountEl, noteEl) {
+    var amt = parseInt(amountEl.value, 10);
+    if (!amt || amt <= 0) { setAdminStatus('請輸入正確的點數', 'err'); return; }
+    if (type === 'redeem' && currentBal < amt) {
+      setAdminStatus(name + ' 點數不足（目前 ' + currentBal.toLocaleString() + ' 點）', 'err'); return;
+    }
+    var entry = { type: type, amount: amt, note: noteEl.value.trim(), date: new Date().toLocaleDateString('zh-TW') };
+    db.collection('users').doc(uid).update({ ledger: firebase.firestore.FieldValue.arrayUnion(entry) })
+      .then(function() {
+        var newBal = currentBal + (type === 'grant' ? amt : -amt);
+        setAdminStatus('已為 ' + name + (type === 'grant' ? ' 發放 ' : ' 兌換 ')
+          + amt.toLocaleString() + ' 點，目前餘額 ' + newBal.toLocaleString() + ' 點', 'ok');
+        renderAdmin();
+      })
+      .catch(function(err) { setAdminStatus('操作失敗：' + err.message, 'err'); });
+  }
+
+  (function() {
+    var entry  = document.getElementById('adminEntry');
+    var enter  = document.getElementById('adminEnter');
+    var pwEl   = document.getElementById('adminPw');
     var logout = document.getElementById('adminLogout');
     if (entry) entry.addEventListener('click', openAdmin);
-    if (adminClose) adminClose.addEventListener('click', closeAdmin);
-    if (adminOverlay) adminOverlay.addEventListener('click', function (e) { if (e.target === adminOverlay) closeAdmin(); });
     function tryEnter() {
       var msg = document.getElementById('adminGateMsg');
-      if (pwEl.value === ADMIN_PASSWORD) { try { sessionStorage.setItem('uh_admin', '1'); } catch (e) {} openAdmin(); }
+      if (!auth.currentUser) { msg.textContent = '請先登入任一會員帳號再進入後台'; msg.className = 'modal-msg err'; return; }
+      if (pwEl.value === ADMIN_PASSWORD) { try { sessionStorage.setItem('uh_admin', '1'); } catch(e) {} openAdmin(); }
       else { msg.textContent = '密碼不正確'; msg.className = 'modal-msg err'; }
     }
-    if (enter) enter.addEventListener('click', tryEnter);
-    if (pwEl) pwEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryEnter(); });
-    if (logout) logout.addEventListener('click', function () { try { sessionStorage.removeItem('uh_admin'); } catch (e) {} openAdmin(); });
+    if (enter)  enter.addEventListener('click', tryEnter);
+    if (pwEl)   pwEl.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryEnter(); });
+    if (logout) logout.addEventListener('click', function() { try { sessionStorage.removeItem('uh_admin'); } catch(e) {} openAdmin(); });
   })();
 
-  /* ──────── 表單送出 ──────── */
-  var form        = document.getElementById('referralForm');
-  var statusEl    = document.getElementById('formStatus');
-  var fallbackBox = document.getElementById('fallbackBox');
-  var fallbackText= document.getElementById('fallbackText');
-  var copyBtn     = document.getElementById('copyBtn');
+  /* ── 表單送出 ── */
+  var form         = document.getElementById('referralForm');
+  var statusEl     = document.getElementById('formStatus');
+  var fallbackBox  = document.getElementById('fallbackBox');
+  var fallbackText = document.getElementById('fallbackText');
+  var copyBtn      = document.getElementById('copyBtn');
 
   function setStatus(m, t) { statusEl.textContent = m; statusEl.className = 'form-status' + (t ? ' ' + t : ''); }
 
-  function isConfigured() {
-    return ['publicKey','serviceId','templateId'].every(function (k) {
+  function isEmailJSConfigured() {
+    return ['publicKey','serviceId','templateId'].every(function(k) {
       var v = EMAILJS_CONFIG[k]; return v && v.indexOf('YOUR_') !== 0;
     });
   }
-
   function loadEmailJS() {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       if (window.emailjs) { resolve(); return; }
       var s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
@@ -1356,10 +1428,10 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
   }
 
   function collectData() {
-    var user = getSession();
+    var user = auth.currentUser;
     return {
-      ref_name:       user ? user.name    : '（未登入）',
-      ref_contact:    user ? user.contact : '（未登入）',
+      ref_name:       _userData ? _userData.name : '（未登入）',
+      ref_contact:    user ? user.email           : '（未登入）',
       friend_name:    form.friendName.value.trim(),
       friend_contact: form.friendContact.value.trim() || '（未填）',
       service:        form.service.value || '（未選擇）',
@@ -1372,12 +1444,12 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
   function buildSummary(d) {
     return ['【合一療癒・轉介紹登記】',
       '介紹人姓名：' + d.ref_name,
-      '介紹人帳號：' + d.ref_contact,
-      '好友姓名：'   + d.friend_name,
-      '好友聯絡：'   + d.friend_contact,
+      '介紹人Email：' + d.ref_contact,
+      '好友姓名：'    + d.friend_name,
+      '好友聯絡：'    + d.friend_contact,
       '想了解的服務：' + d.service,
-      '備註：'       + d.message,
-      '登記時間：'   + d.sent_at].join('\n');
+      '備註：'        + d.message,
+      '登記時間：'    + d.sent_at].join('\n');
   }
 
   function showFallback(d) {
@@ -1387,40 +1459,52 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
     fallbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  copyBtn.addEventListener('click', function () {
+  copyBtn.addEventListener('click', function() {
     var text = fallbackText.value;
-    function done() { copyBtn.textContent = '已複製！'; setTimeout(function () { copyBtn.textContent = '複製內容'; }, 2000); }
+    function done() { copyBtn.textContent = '已複製！'; setTimeout(function() { copyBtn.textContent = '複製內容'; }, 2000); }
     function legacy() { fallbackText.focus(); fallbackText.select(); try { document.execCommand('copy'); done(); } catch(e){} }
     if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
   });
 
-  form.addEventListener('submit', function (e) {
+  function recordReferral(data) {
+    var user = auth.currentUser; if (!user) return Promise.resolve();
+    var entry = {
+      friend:  data.friend_name,
+      service: data.service && !data.service.startsWith('（') ? data.service : '',
+      date:    new Date().toLocaleDateString('zh-TW')
+    };
+    return db.collection('users').doc(user.uid).update({
+      referrals: firebase.firestore.FieldValue.arrayUnion(entry)
+    });
+  }
+
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
-    if (!getSession()) { openModal(); return; }
+    if (!auth.currentUser) { openModal(); return; }
     if (form.website.value) { setStatus('已收到您的登記，謝謝您！', 'ok'); form.reset(); return; }
     if (!form.friendName.value.trim()) { setStatus('請填寫好友姓名', 'err'); form.friendName.focus(); return; }
 
-    var data = collectData();
-    recordReferral(data);
-    if (!isConfigured()) { showFallback(data); return; }
-
     submitBtn.disabled = true;
     setStatus('送出中…');
-    loadEmailJS()
-      .then(function () {
-        window.emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-        return window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, data);
+    var data = collectData();
+
+    recordReferral(data)
+      .then(function() {
+        if (!isEmailJSConfigured()) { showFallback(data); submitBtn.disabled = false; return; }
+        return loadEmailJS()
+          .then(function() {
+            window.emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+            return window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, data);
+          })
+          .then(function() {
+            setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫。', 'ok');
+            fallbackBox.classList.remove('show');
+            form.reset();
+            submitBtn.disabled = false;
+          })
+          .catch(function() { showFallback(data); submitBtn.disabled = false; });
       })
-      .then(function () {
-        setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫。', 'ok');
-        fallbackBox.classList.remove('show');
-        form.reset();
-        submitBtn.disabled = false;
-      })
-      .catch(function () {
-        showFallback(data);
-        submitBtn.disabled = false;
-      });
+      .catch(function(err) { setStatus('記錄失敗：' + err.message, 'err'); submitBtn.disabled = false; });
   });
 
   /* 以 .../referral.html#admin 連結可直接開啟後台 */
