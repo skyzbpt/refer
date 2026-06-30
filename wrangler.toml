@@ -1,0 +1,17 @@
+name = "refer"
+pages_build_output_dir = "public"
+
+# ✏️ 部署步驟：
+# 1. wrangler d1 create refer-db
+#    → 複製輸出的 database_id 填入下方
+# 2. wrangler d1 execute refer-db --file=schema.sql --remote
+# 3. wrangler pages secret put JWT_SECRET
+#    （隨機字串，例如：openssl rand -hex 32）
+# 4. wrangler pages secret put ADMIN_PASSWORD
+#    （後台管理密碼，例如：318）
+# 5. wrangler pages deploy public --project-name=refer
+
+[[d1_databases]]
+binding = "DB"
+database_name = "refer-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
