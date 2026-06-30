@@ -3,8 +3,7 @@ import { json, handleOptions } from '../_lib.js';
 export async function onRequestOptions() { return handleOptions(); }
 
 export async function onRequestGet({ request, env }) {
-  const url = new URL(request.url);
-  const pw  = url.searchParams.get('password') || '';
+  const pw = request.headers.get('X-Admin-Password') || '';
 
   if (!env.ADMIN_PASSWORD || pw !== env.ADMIN_PASSWORD) {
     return json({ error: '密碼不正確' }, 403);
