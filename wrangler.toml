@@ -1,0 +1,7 @@
+name = "refer"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "refer-db"
+database_id = "26a495d0-4f5c-4c57-b0be-2f465787d0be"
