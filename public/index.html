@@ -16,7 +16,7 @@
   2. 級距加碼（3／5／10 位與加贈點數）：搜尋「✏️ 級距」
   3. 表單服務選項：搜尋「✏️ 服務選項」
   4. 聯絡資訊（Instagram）：搜尋「✏️ 聯絡資訊」
-  5. EmailJS 設定：搜尋「✏️ EMAILJS_CONFIG」（選填，用於自動寄信）
+  5. Email 通知：於 Cloudflare 後台設定 RESEND_API_KEY 機密（選填）
      （未設定時，表單會顯示「複製登記內容」備援面板，不會跳離頁面）
   6. 主題色：搜尋「:root」即可一次調整整體配色
 ============================================================ -->
@@ -947,15 +947,6 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
 </footer>
 
 <script>
-/* ============================================================
-   ✏️ EMAILJS_CONFIG：選填，用於自動寄送轉介紹通知信
-   （三個值任一保持 YOUR_ 開頭時，送出會顯示「複製內容」備援面板）
-============================================================ */
-var EMAILJS_CONFIG = {
-  publicKey:  'YOUR_PUBLIC_KEY',
-  serviceId:  'YOUR_SERVICE_ID',
-  templateId: 'YOUR_TEMPLATE_ID'
-};
 /* ✏️ 聯絡資訊 */
 var IG_URL = 'https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr';
 /* ✏️ 兌換方式 */
@@ -1406,21 +1397,6 @@ function balanceOf(u) {
 
   function setStatus(m, t) { statusEl.textContent = m; statusEl.className = 'form-status' + (t ? ' ' + t : ''); }
 
-  function isEmailJSConfigured() {
-    return ['publicKey','serviceId','templateId'].every(function(k) {
-      var v = EMAILJS_CONFIG[k]; return v && v.indexOf('YOUR_') !== 0;
-    });
-  }
-  function loadEmailJS() {
-    return new Promise(function(resolve, reject) {
-      if (window.emailjs) { resolve(); return; }
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-      s.onload = resolve; s.onerror = reject;
-      document.head.appendChild(s);
-    });
-  }
-
   function collectData() {
     return {
       ref_name:       _userData ? _userData.name  : '（未登入）',
@@ -1461,11 +1437,16 @@ function balanceOf(u) {
 
   function recordReferral(data) {
     if (!_token) return Promise.resolve({ ok: true });
-    var service = data.service && !data.service.startsWith('（') ? data.service : '';
+    function clean(v) { return v && v.charAt(0) !== '（' ? v : ''; }
     return fetch('/api/referrals', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
-      body: JSON.stringify({ friend_name: data.friend_name, service: service })
+      body: JSON.stringify({
+        friend_name:    data.friend_name,
+        friend_contact: clean(data.friend_contact),
+        service:        clean(data.service),
+        message:        clean(data.message)
+      })
     }).then(function(r) { return r.json(); });
   }
 
@@ -1482,19 +1463,14 @@ function balanceOf(u) {
     recordReferral(data)
       .then(function(result) {
         if (result && result.error) { setStatus('記錄失敗：' + result.error, 'err'); submitBtn.disabled = false; return; }
-        if (!isEmailJSConfigured()) { showFallback(data); submitBtn.disabled = false; return; }
-        return loadEmailJS()
-          .then(function() {
-            window.emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-            return window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, data);
-          })
-          .then(function() {
-            setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫。', 'ok');
-            fallbackBox.classList.remove('show');
-            form.reset();
-            submitBtn.disabled = false;
-          })
-          .catch(function() { showFallback(data); submitBtn.disabled = false; });
+        if (result && result.notified) {
+          setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫。', 'ok');
+          fallbackBox.classList.remove('show');
+          form.reset();
+        } else {
+          showFallback(data);
+        }
+        submitBtn.disabled = false;
       })
       .catch(function(err) { setStatus('記錄失敗：' + err.message, 'err'); submitBtn.disabled = false; });
   });
