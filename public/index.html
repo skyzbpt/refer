@@ -397,6 +397,14 @@ h2{font-size:clamp(24px,3.6vw,34px)}
 .admin-ref-list li{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
 .admin-ref-list .rf-name{font-weight:500;font-size:13.5px}
 .admin-ref-msg{flex-basis:100%;color:var(--muted);font-size:12.5px;line-height:1.6}
+.admin-row-actions{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--muted);padding:2px 9px;line-height:1.7;transition:color .2s,border-color .2s}
+.icon-btn:hover{color:var(--deep);border-color:var(--blue)}
+.icon-btn.danger:hover{color:#C2603F;border-color:#C2603F}
+.admin-edit-form{flex-basis:100%;display:grid;gap:6px;padding:2px 0}
+.admin-edit-form input{font-family:var(--font-body);font-size:13px;color:var(--ink);background:var(--surface-top);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.admin-edit-form input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,147,194,.16)}
+.admin-edit-actions{display:flex;gap:8px;margin-top:2px}
 .admin-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .admin-controls input{font-family:var(--font-body);font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 12px}
 .admin-controls .admin-amount{width:96px}
@@ -897,7 +905,7 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
         </div>
         <p class="admin-status" id="adminStatus" role="status" aria-live="polite"></p>
         <div id="adminList"></div>
-        <p class="member-note">於各會員欄位輸入點數後，按「發放」增加紅利、按「兌換」扣除紅利（兌換不可超過餘額）。資料儲存於雲端資料庫 (Cloudflare D1)；管理員需先以任一會員帳號登入，再輸入管理密碼。</p>
+        <p class="member-note">輸入點數後按「發放」增加紅利、「兌換」扣除紅利（兌換不可超過餘額）。推薦紀錄可「編輯／刪除」，異動紀錄可「刪除」，刪除後餘額立即重算。資料儲存於雲端資料庫 (Cloudflare D1)；管理員需先以任一會員帳號登入，再輸入管理密碼。</p>
       </div>
     </div>
   </div>
@@ -1301,6 +1309,52 @@ function balanceOf(u) {
     var el = document.getElementById('adminStatus'); if (!el) return;
     el.textContent = txt; el.className = 'admin-status' + (type ? ' ' + type : '');
   }
+  function adminPwVal() { try { return sessionStorage.getItem('uh_admin_pw') || ''; } catch(e) { return ''; } }
+
+  /* 管理操作共用：帶密碼呼叫 API，成功後重新整理列表 */
+  function adminApi(url, opts, okText) {
+    opts = opts || {};
+    opts.headers = opts.headers || {};
+    opts.headers['X-Admin-Password'] = adminPwVal();
+    return fetch(url, opts)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.error) { setAdminStatus('操作失敗：' + data.error, 'err'); return null; }
+        if (okText) setAdminStatus(okText, 'ok');
+        renderAdmin();
+        return data;
+      })
+      .catch(function() { setAdminStatus('操作失敗，請檢查網路後再試', 'err'); return null; });
+  }
+
+  /* 推薦紀錄列 → 切換成編輯表單 */
+  function openRefEdit(li, r) {
+    li.innerHTML = '<div class="admin-edit-form">'
+      + '<input class="ef-friend"  value="' + escHtml(r.friend)        + '" placeholder="好友姓名" aria-label="好友姓名">'
+      + '<input class="ef-contact" value="' + escHtml(r.contact || '') + '" placeholder="聯絡方式（選填）" aria-label="聯絡方式">'
+      + '<input class="ef-service" value="' + escHtml(r.service || '') + '" placeholder="想了解的服務（選填）" aria-label="想了解的服務">'
+      + '<input class="ef-message" value="' + escHtml(r.message || '') + '" placeholder="備註（選填）" aria-label="備註">'
+      + '<div class="admin-edit-actions">'
+      +   '<button class="btn btn-primary btn-sm ef-save" type="button">儲存</button>'
+      +   '<button class="btn btn-ghost btn-sm ef-cancel" type="button">取消</button>'
+      + '</div></div>';
+    li.querySelector('.ef-cancel').addEventListener('click', function() { renderAdmin(); });
+    li.querySelector('.ef-save').addEventListener('click', function() {
+      var friend = li.querySelector('.ef-friend').value.trim();
+      if (!friend) { setAdminStatus('好友姓名不可空白', 'err'); return; }
+      adminApi('/api/admin/referral', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id:      r.id,
+          friend:  friend,
+          contact: li.querySelector('.ef-contact').value.trim(),
+          service: li.querySelector('.ef-service').value.trim(),
+          message: li.querySelector('.ef-message').value.trim()
+        })
+      }, '已更新推薦紀錄');
+    });
+  }
 
   function renderAdmin() {
     var adminPw = '';
@@ -1325,6 +1379,10 @@ function balanceOf(u) {
                   var meta = [r.service, r.contact, r.date].filter(Boolean).map(escHtml).join('・');
                   return '<li><span class="rf-name">' + escHtml(r.friend) + '</span>'
                     + (meta ? '<span class="rf-meta">' + meta + '</span>' : '')
+                    + '<span class="admin-row-actions">'
+                    +   '<button class="icon-btn ref-edit" type="button">編輯</button>'
+                    +   '<button class="icon-btn danger ref-del" type="button">刪除</button>'
+                    + '</span>'
                     + (r.message ? '<span class="admin-ref-msg">「' + escHtml(r.message) + '」</span>' : '')
                     + '</li>';
                 }).join('')
@@ -1335,7 +1393,8 @@ function balanceOf(u) {
             var grant = t.type === 'grant';
             return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">'
               + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">'
-              + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span></li>';
+              + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span>'
+              + '<button class="icon-btn danger lg-del" type="button">刪除</button></li>';
           }).join('');
           var card = document.createElement('div');
           card.className = 'admin-card';
@@ -1355,6 +1414,24 @@ function balanceOf(u) {
           var noteEl   = card.querySelector('.admin-note');
           card.querySelector('.admin-grant').addEventListener('click', function() { adminAdjust(uid, u.name, bal, 'grant',  amountEl, noteEl); });
           card.querySelector('.admin-redeem').addEventListener('click', function() { adminAdjust(uid, u.name, bal, 'redeem', amountEl, noteEl); });
+          card.querySelectorAll('.ref-edit').forEach(function(btn, i) {
+            btn.addEventListener('click', function() { openRefEdit(btn.closest('li'), refs[i]); });
+          });
+          card.querySelectorAll('.ref-del').forEach(function(btn, i) {
+            btn.addEventListener('click', function() {
+              var r = refs[i];
+              if (!confirm('確定刪除「' + r.friend + '」這筆推薦紀錄？此操作無法復原。')) return;
+              adminApi('/api/admin/referral?id=' + r.id, { method: 'DELETE' }, '已刪除推薦紀錄');
+            });
+          });
+          card.querySelectorAll('.lg-del').forEach(function(btn, i) {
+            btn.addEventListener('click', function() {
+              var t = ledger[i];
+              var sign = t.type === 'grant' ? '+' : '−';
+              if (!confirm('確定刪除這筆「' + sign + t.amount.toLocaleString() + ' 點」的異動紀錄？刪除後會員餘額會立即重算。')) return;
+              adminApi('/api/admin/ledger?id=' + t.id, { method: 'DELETE' }, '已刪除異動紀錄');
+            });
+          });
           wrap.appendChild(card);
         });
       })
