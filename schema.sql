@@ -15,7 +15,9 @@ CREATE TABLE IF NOT EXISTS referrals (
   user_uid  TEXT NOT NULL REFERENCES users(uid) ON DELETE CASCADE,
   friend    TEXT NOT NULL,
   service   TEXT NOT NULL DEFAULT '',
-  date      TEXT NOT NULL
+  date      TEXT NOT NULL,
+  contact   TEXT NOT NULL DEFAULT '',
+  message   TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS ledger (
