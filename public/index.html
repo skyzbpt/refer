@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>個案轉介紹回饋方案｜合一療癒</title>
 <meta name="description" content="推薦好友來合一療癒，每位獲得 500 點紅利；好友享免費健康諮詢與健康講座。">
+<meta name="theme-color" content="#F4FAFD">
+<meta property="og:type" content="website">
+<meta property="og:title" content="個案轉介紹回饋方案｜合一療癒">
+<meta property="og:description" content="推薦好友來合一療癒，每位獲得 500 點紅利；好友享免費健康諮詢與健康講座。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 30'%3E%3Cg fill='none' stroke='%2322495F' stroke-width='2.2' stroke-linejoin='round'%3E%3Cpath d='M18 3 C14.8 8 14.8 14.6 18 19 C21.2 14.6 21.2 8 18 3 Z'/%3E%3Cpath d='M7 8.5 C7.8 14.6 11.6 18.4 17 19.4 C15.8 13.8 12.4 10 7 8.5 Z'/%3E%3Cpath d='M29 8.5 C28.2 14.6 24.4 18.4 19 19.4 C20.2 13.8 23.6 10 29 8.5 Z'/%3E%3C/g%3E%3Cpath d='M5.5 24.5 Q11.75 28.5 18 24.5 Q24.25 28.5 30.5 24.5' fill='none' stroke='%2369B6BE' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
 
 <!-- ============================================================
   ✏️ 快速編輯指南（給站主）
@@ -453,12 +458,103 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
 /* ---------- 進場動畫 ---------- */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
 .reveal.in{opacity:1;transform:none}
+.reward-cards .reveal:nth-child(2){transition-delay:.12s}
+.milestones .reveal:nth-child(2){transition-delay:.12s}
+.milestones .reveal:nth-child(3){transition-delay:.24s}
+
+/* ============================================================
+   ✨ 視覺強化
+============================================================ */
+/* 文字選取與捲軸 */
+::selection{background:rgba(105,182,190,.32);color:var(--deep)}
+html{scrollbar-color:var(--aqua-soft) transparent;scrollbar-width:thin}
+::-webkit-scrollbar{width:12px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--aqua-soft);border-radius:999px;border:3px solid var(--surface)}
+::-webkit-scrollbar-thumb:hover{background:var(--blue)}
+
+/* 導覽列：捲動後加深質感 */
+.nav{transition:background .3s ease,box-shadow .3s ease}
+.nav.scrolled{background:rgba(244,250,253,.94);box-shadow:0 10px 30px rgba(34,73,95,.08)}
+
+/* Hero：漸層標題與進場節奏 */
+.hero h1{
+  background:linear-gradient(118deg,var(--deep) 18%,var(--blue-strong) 55%,var(--teal-deep) 92%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero .mark,.hero .eyebrow,.hero h1,.hero .lead,.hero-actions{animation:fadeUp .9s ease both}
+.hero .eyebrow{animation-delay:.12s}
+.hero h1{animation-delay:.22s}
+.hero .lead{animation-delay:.34s}
+.hero-actions{animation-delay:.46s}
+
+/* 小節眉標：左右對稱水平線 */
+.eyebrow::after{content:"";width:22px;height:1px;background:var(--teal)}
+
+/* 按鈕：按壓回饋與光澤 */
+.btn{position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn-primary::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 55%);
+}
+
+/* 卡片：懸浮微升與水感邊光 */
+.flow-node,.reward-card,.milestone,.redeem{transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease,background .35s ease}
+.flow-node:hover{transform:translateY(-2px);border-color:var(--aqua-soft);box-shadow:var(--shadow)}
+.reward-card:hover{transform:translateY(-4px);border-color:var(--aqua-soft);box-shadow:0 18px 42px rgba(34,73,95,.14)}
+.reward-card,.flow-node,.redeem,.form-card{box-shadow:var(--shadow-sm),inset 0 1px 0 rgba(255,255,255,.85)}
+.form-card{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.85)}
+.reward-amount em{
+  background:linear-gradient(120deg,var(--blue),var(--teal-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.flow-badge{
+  background:linear-gradient(160deg,#FFFFFF,var(--aqua-pale));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 12px rgba(74,147,194,.16);
+}
+
+/* 深色級距區：更有層次的水光 */
+.sec-milestone{
+  background:
+    radial-gradient(720px 420px at 10% -5%, rgba(105,182,190,.20), transparent 60%),
+    radial-gradient(640px 460px at 92% 105%, rgba(74,147,194,.24), transparent 62%),
+    linear-gradient(160deg,var(--deep),#1A3B4D);
+}
+.milestone:hover{transform:translateY(-4px);background:rgba(255,255,255,.09);border-color:rgba(198,228,241,.45)}
+.milestone-badge{box-shadow:0 0 0 7px rgba(105,182,190,.08),inset 0 1px 0 rgba(255,255,255,.14)}
+
+/* FAQ 與會員點數卡 */
+.faq-q{transition:color .2s ease}
+.faq-q:hover{color:var(--blue-strong)}
+.points-card{position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(34,73,95,.2),inset 0 1px 0 rgba(255,255,255,.25)}
+.points-card::after{
+  content:"";position:absolute;top:-70%;left:-15%;width:60%;height:240%;pointer-events:none;
+  background:linear-gradient(78deg,transparent,rgba(255,255,255,.13),transparent);transform:rotate(10deg);
+}
+.modal{border:1px solid rgba(255,255,255,.65)}
+
+/* 手機版節奏 */
+@media (max-width:600px){
+  .sec{padding:64px 0}
+  .sec-tight{padding:48px 0}
+  .hero{padding:84px 0 96px}
+  .sec-milestone{padding:92px 0}
+  .form-foot .btn{width:100%;text-align:center}
+  .hero-actions .btn{flex:1 1 auto;min-width:150px}
+}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none;transition:none}
   .ripples span,.emit,.blob{animation:none}
   .tap-ripple{display:none}
   .btn,.faq-icon,.faq-a{transition:none}
+  .hero .mark,.hero .eyebrow,.hero h1,.hero .lead,.hero-actions{animation:none}
+  .flow-node,.reward-card,.milestone,.redeem{transition:none}
+  .flow-node:hover,.reward-card:hover,.milestone:hover{transform:none}
 }
 </style>
 </head>
@@ -949,6 +1045,14 @@ var THRESHOLD = 1500;
 
 /* ---------- 年份 ---------- */
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---------- 導覽列捲動質感 ---------- */
+(function () {
+  var nav = document.querySelector('.nav');
+  function onScroll() { nav.classList.toggle('scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 
 /* ---------- 站內導覽 ---------- */
 (function () {
