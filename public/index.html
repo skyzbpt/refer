@@ -826,6 +826,7 @@ html{scrollbar-color:var(--aqua-soft) transparent;scrollbar-width:thin}
       <div class="form-foot">
         <button type="submit" class="btn btn-primary" id="submitBtn">送出登記</button>
         <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        <p class="privacy">送出後系統會自動複製您的登記內容並開啟 Instagram，直接貼上私訊給我們即可完成。</p>
         <p class="privacy">您提供的資料僅用於本方案的聯繫與回饋發放，我們會妥善保管，不另作其他用途。</p>
       </div>
     </form>
@@ -1040,6 +1041,8 @@ html{scrollbar-color:var(--aqua-soft) transparent;scrollbar-width:thin}
 </footer>
 
 <script>
+/* ✏️ 聯絡資訊：送出登記後自動開啟的 Instagram 連結 */
+var IG_URL = 'https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr';
 /* ✏️ 兌換方式 */
 var THRESHOLD = 1500;
 
@@ -1118,10 +1121,27 @@ function escHtml(s) {
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
 }
+function legacyCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed'; ta.style.left = '-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
 function copyText(text, btn, label) {
   function done() { btn.textContent = '已複製！'; setTimeout(function() { btn.textContent = label; }, 2000); }
-  function legacy() { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch(e){} document.body.removeChild(ta); }
-  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function() { legacyCopy(text); done(); });
+  } else { legacyCopy(text); done(); }
+}
+/* 靜默複製：不需按鈕回饋（表單送出流程用） */
+function copyTextSilent(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function() { legacyCopy(text); });
+    } else { legacyCopy(text); }
+  } catch(e) {}
 }
 function balanceOf(u) {
   var bal = 0;
@@ -1603,11 +1623,25 @@ function balanceOf(u) {
 
   function setStatus(m, t) { statusEl.textContent = m; statusEl.className = 'form-status' + (t ? ' ' + t : ''); }
 
+  function buildSummary() {
+    return ['【合一療癒・轉介紹登記】',
+      '介紹人姓名：'   + (_userData ? _userData.name  : ''),
+      '介紹人Email：'  + (_userData ? _userData.email : ''),
+      '好友姓名：'     + form.friendName.value.trim(),
+      '好友聯絡：'     + (form.friendContact.value.trim() || '（未填）'),
+      '想了解的服務：' + (form.service.value || '（未選擇）'),
+      '備註：'         + (form.message.value.trim() || '（無）'),
+      '登記時間：'     + new Date().toLocaleString('zh-TW')].join('\n');
+  }
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     if (!_token) { openModal(); return; }
     if (form.website.value) { setStatus('已收到您的登記，謝謝您！', 'ok'); form.reset(); return; }
     if (!form.friendName.value.trim()) { setStatus('請填寫好友姓名', 'err'); form.friendName.focus(); return; }
+
+    /* 在點擊當下先複製（瀏覽器只允許使用者操作時寫入剪貼簿） */
+    copyTextSilent(buildSummary());
 
     submitBtn.disabled = true;
     submitBtn.textContent = '送出中…';
@@ -1627,9 +1661,10 @@ function balanceOf(u) {
       .then(function(r) { return r.json(); })
       .then(function(result) {
         if (result && result.error) { setStatus('送出失敗：' + result.error, 'err'); done(); return; }
-        setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫並發放紅利。', 'ok');
+        setStatus('已收到您的登記！內容已自動複製，正在為您開啟 Instagram，貼上私訊給我們即可 💬', 'ok');
         form.reset();
         done();
+        setTimeout(function() { location.href = IG_URL; }, 1800);
       })
       .catch(function() { setStatus('送出失敗，請檢查網路後再試一次。', 'err'); done(); });
   });
