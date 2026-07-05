@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>個案轉介紹回饋方案｜合一療癒</title>
 <meta name="description" content="推薦好友來合一療癒，每位獲得 500 點紅利；好友享免費健康諮詢與健康講座。">
+<meta name="theme-color" content="#F4FAFD">
+<meta property="og:type" content="website">
+<meta property="og:title" content="個案轉介紹回饋方案｜合一療癒">
+<meta property="og:description" content="推薦好友來合一療癒，每位獲得 500 點紅利；好友享免費健康諮詢與健康講座。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 30'%3E%3Cg fill='none' stroke='%2322495F' stroke-width='2.2' stroke-linejoin='round'%3E%3Cpath d='M18 3 C14.8 8 14.8 14.6 18 19 C21.2 14.6 21.2 8 18 3 Z'/%3E%3Cpath d='M7 8.5 C7.8 14.6 11.6 18.4 17 19.4 C15.8 13.8 12.4 10 7 8.5 Z'/%3E%3Cpath d='M29 8.5 C28.2 14.6 24.4 18.4 19 19.4 C20.2 13.8 23.6 10 29 8.5 Z'/%3E%3C/g%3E%3Cpath d='M5.5 24.5 Q11.75 28.5 18 24.5 Q24.25 28.5 30.5 24.5' fill='none' stroke='%2369B6BE' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
 
 <!-- ============================================================
   ✏️ 快速編輯指南（給站主）
@@ -397,6 +402,14 @@ h2{font-size:clamp(24px,3.6vw,34px)}
 .admin-ref-list li{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
 .admin-ref-list .rf-name{font-weight:500;font-size:13.5px}
 .admin-ref-msg{flex-basis:100%;color:var(--muted);font-size:12.5px;line-height:1.6}
+.admin-row-actions{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--muted);padding:2px 9px;line-height:1.7;transition:color .2s,border-color .2s}
+.icon-btn:hover{color:var(--deep);border-color:var(--blue)}
+.icon-btn.danger:hover{color:#C2603F;border-color:#C2603F}
+.admin-edit-form{flex-basis:100%;display:grid;gap:6px;padding:2px 0}
+.admin-edit-form input{font-family:var(--font-body);font-size:13px;color:var(--ink);background:var(--surface-top);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.admin-edit-form input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,147,194,.16)}
+.admin-edit-actions{display:flex;gap:8px;margin-top:2px}
 .admin-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .admin-controls input{font-family:var(--font-body);font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 12px}
 .admin-controls .admin-amount{width:96px}
@@ -445,12 +458,103 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
 /* ---------- 進場動畫 ---------- */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
 .reveal.in{opacity:1;transform:none}
+.reward-cards .reveal:nth-child(2){transition-delay:.12s}
+.milestones .reveal:nth-child(2){transition-delay:.12s}
+.milestones .reveal:nth-child(3){transition-delay:.24s}
+
+/* ============================================================
+   ✨ 視覺強化
+============================================================ */
+/* 文字選取與捲軸 */
+::selection{background:rgba(105,182,190,.32);color:var(--deep)}
+html{scrollbar-color:var(--aqua-soft) transparent;scrollbar-width:thin}
+::-webkit-scrollbar{width:12px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--aqua-soft);border-radius:999px;border:3px solid var(--surface)}
+::-webkit-scrollbar-thumb:hover{background:var(--blue)}
+
+/* 導覽列：捲動後加深質感 */
+.nav{transition:background .3s ease,box-shadow .3s ease}
+.nav.scrolled{background:rgba(244,250,253,.94);box-shadow:0 10px 30px rgba(34,73,95,.08)}
+
+/* Hero：漸層標題與進場節奏 */
+.hero h1{
+  background:linear-gradient(118deg,var(--deep) 18%,var(--blue-strong) 55%,var(--teal-deep) 92%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero .mark,.hero .eyebrow,.hero h1,.hero .lead,.hero-actions{animation:fadeUp .9s ease both}
+.hero .eyebrow{animation-delay:.12s}
+.hero h1{animation-delay:.22s}
+.hero .lead{animation-delay:.34s}
+.hero-actions{animation-delay:.46s}
+
+/* 小節眉標：左右對稱水平線 */
+.eyebrow::after{content:"";width:22px;height:1px;background:var(--teal)}
+
+/* 按鈕：按壓回饋與光澤 */
+.btn{position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn-primary::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 55%);
+}
+
+/* 卡片：懸浮微升與水感邊光 */
+.flow-node,.reward-card,.milestone,.redeem{transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease,background .35s ease}
+.flow-node:hover{transform:translateY(-2px);border-color:var(--aqua-soft);box-shadow:var(--shadow)}
+.reward-card:hover{transform:translateY(-4px);border-color:var(--aqua-soft);box-shadow:0 18px 42px rgba(34,73,95,.14)}
+.reward-card,.flow-node,.redeem,.form-card{box-shadow:var(--shadow-sm),inset 0 1px 0 rgba(255,255,255,.85)}
+.form-card{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.85)}
+.reward-amount em{
+  background:linear-gradient(120deg,var(--blue),var(--teal-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.flow-badge{
+  background:linear-gradient(160deg,#FFFFFF,var(--aqua-pale));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 12px rgba(74,147,194,.16);
+}
+
+/* 深色級距區：更有層次的水光 */
+.sec-milestone{
+  background:
+    radial-gradient(720px 420px at 10% -5%, rgba(105,182,190,.20), transparent 60%),
+    radial-gradient(640px 460px at 92% 105%, rgba(74,147,194,.24), transparent 62%),
+    linear-gradient(160deg,var(--deep),#1A3B4D);
+}
+.milestone:hover{transform:translateY(-4px);background:rgba(255,255,255,.09);border-color:rgba(198,228,241,.45)}
+.milestone-badge{box-shadow:0 0 0 7px rgba(105,182,190,.08),inset 0 1px 0 rgba(255,255,255,.14)}
+
+/* FAQ 與會員點數卡 */
+.faq-q{transition:color .2s ease}
+.faq-q:hover{color:var(--blue-strong)}
+.points-card{position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(34,73,95,.2),inset 0 1px 0 rgba(255,255,255,.25)}
+.points-card::after{
+  content:"";position:absolute;top:-70%;left:-15%;width:60%;height:240%;pointer-events:none;
+  background:linear-gradient(78deg,transparent,rgba(255,255,255,.13),transparent);transform:rotate(10deg);
+}
+.modal{border:1px solid rgba(255,255,255,.65)}
+
+/* 手機版節奏 */
+@media (max-width:600px){
+  .sec{padding:64px 0}
+  .sec-tight{padding:48px 0}
+  .hero{padding:84px 0 96px}
+  .sec-milestone{padding:92px 0}
+  .form-foot .btn{width:100%;text-align:center}
+  .hero-actions .btn{flex:1 1 auto;min-width:150px}
+}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none;transition:none}
   .ripples span,.emit,.blob{animation:none}
   .tap-ripple{display:none}
   .btn,.faq-icon,.faq-a{transition:none}
+  .hero .mark,.hero .eyebrow,.hero h1,.hero .lead,.hero-actions{animation:none}
+  .flow-node,.reward-card,.milestone,.redeem{transition:none}
+  .flow-node:hover,.reward-card:hover,.milestone:hover{transform:none}
 }
 </style>
 </head>
@@ -722,6 +826,7 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
       <div class="form-foot">
         <button type="submit" class="btn btn-primary" id="submitBtn">送出登記</button>
         <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        <p class="privacy">送出後系統會自動複製您的登記內容，並提示您前往 Instagram 貼上私訊給我們。</p>
         <p class="privacy">您提供的資料僅用於本方案的聯繫與回饋發放，我們會妥善保管，不另作其他用途。</p>
       </div>
     </form>
@@ -897,7 +1002,27 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
         </div>
         <p class="admin-status" id="adminStatus" role="status" aria-live="polite"></p>
         <div id="adminList"></div>
-        <p class="member-note">於各會員欄位輸入點數後，按「發放」增加紅利、按「兌換」扣除紅利（兌換不可超過餘額）。資料儲存於雲端資料庫 (Cloudflare D1)；管理員需先以任一會員帳號登入，再輸入管理密碼。</p>
+        <p class="member-note">輸入點數後按「發放」增加紅利、「兌換」扣除紅利（兌換不可超過餘額）。推薦紀錄可「編輯／刪除」，異動紀錄可「刪除」，刪除後餘額立即重算。資料儲存於雲端資料庫 (Cloudflare D1)；管理員需先以任一會員帳號登入，再輸入管理密碼。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 登記成功：前往 IG 提示 ===================== -->
+<div class="modal-overlay" id="igOverlay" role="dialog" aria-modal="true" aria-label="登記成功">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>登記成功 🎉</h3>
+      <p>登記內容已自動複製</p>
+      <button class="modal-close" id="igClose" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="redeem-desc">要現在前往 Instagram，把登記內容貼上私訊給我們嗎？若貼上時發現是空的，先按「複製內容」再過去。</p>
+      <textarea class="redeem-text" id="igSummaryText" readonly aria-label="登記內容"></textarea>
+      <div class="redeem-actions">
+        <a class="btn btn-primary btn-sm" id="igGo" href="#" target="_blank" rel="noopener">前往 Instagram</a>
+        <button class="btn btn-ghost btn-sm" id="igCopyBtn" type="button">複製內容</button>
+        <button class="btn btn-ghost btn-sm" id="igLater" type="button">稍後再說</button>
       </div>
     </div>
   </div>
@@ -936,11 +1061,21 @@ footer{position:relative;overflow:hidden;background:linear-gradient(160deg,var(-
 </footer>
 
 <script>
+/* ✏️ 聯絡資訊：送出登記後自動開啟的 Instagram 連結 */
+var IG_URL = 'https://www.instagram.com/sky_the_physio?igsh=bWRlMmJjOWJjZWRn&utm_source=qr';
 /* ✏️ 兌換方式 */
 var THRESHOLD = 1500;
 
 /* ---------- 年份 ---------- */
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---------- 導覽列捲動質感 ---------- */
+(function () {
+  var nav = document.querySelector('.nav');
+  function onScroll() { nav.classList.toggle('scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 
 /* ---------- 站內導覽 ---------- */
 (function () {
@@ -1006,10 +1141,27 @@ function escHtml(s) {
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
 }
+function legacyCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed'; ta.style.left = '-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
 function copyText(text, btn, label) {
   function done() { btn.textContent = '已複製！'; setTimeout(function() { btn.textContent = label; }, 2000); }
-  function legacy() { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch(e){} document.body.removeChild(ta); }
-  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done).catch(legacy); } else { legacy(); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function() { legacyCopy(text); done(); });
+  } else { legacyCopy(text); done(); }
+}
+/* 靜默複製：不需按鈕回饋（表單送出流程用） */
+function copyTextSilent(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function() { legacyCopy(text); });
+    } else { legacyCopy(text); }
+  } catch(e) {}
 }
 function balanceOf(u) {
   var bal = 0;
@@ -1129,7 +1281,7 @@ function balanceOf(u) {
   overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
   memberOverlay.addEventListener('click', function(e) { if (e.target === memberOverlay) closeMember(); });
   adminOverlay.addEventListener('click', function(e) { if (e.target === adminOverlay) closeAdmin(); });
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); } });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); closeIgModal(); } });
 
   /* ── 分頁切換 ── */
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
@@ -1301,6 +1453,52 @@ function balanceOf(u) {
     var el = document.getElementById('adminStatus'); if (!el) return;
     el.textContent = txt; el.className = 'admin-status' + (type ? ' ' + type : '');
   }
+  function adminPwVal() { try { return sessionStorage.getItem('uh_admin_pw') || ''; } catch(e) { return ''; } }
+
+  /* 管理操作共用：帶密碼呼叫 API，成功後重新整理列表 */
+  function adminApi(url, opts, okText) {
+    opts = opts || {};
+    opts.headers = opts.headers || {};
+    opts.headers['X-Admin-Password'] = adminPwVal();
+    return fetch(url, opts)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.error) { setAdminStatus('操作失敗：' + data.error, 'err'); return null; }
+        if (okText) setAdminStatus(okText, 'ok');
+        renderAdmin();
+        return data;
+      })
+      .catch(function() { setAdminStatus('操作失敗，請檢查網路後再試', 'err'); return null; });
+  }
+
+  /* 推薦紀錄列 → 切換成編輯表單 */
+  function openRefEdit(li, r) {
+    li.innerHTML = '<div class="admin-edit-form">'
+      + '<input class="ef-friend"  value="' + escHtml(r.friend)        + '" placeholder="好友姓名" aria-label="好友姓名">'
+      + '<input class="ef-contact" value="' + escHtml(r.contact || '') + '" placeholder="聯絡方式（選填）" aria-label="聯絡方式">'
+      + '<input class="ef-service" value="' + escHtml(r.service || '') + '" placeholder="想了解的服務（選填）" aria-label="想了解的服務">'
+      + '<input class="ef-message" value="' + escHtml(r.message || '') + '" placeholder="備註（選填）" aria-label="備註">'
+      + '<div class="admin-edit-actions">'
+      +   '<button class="btn btn-primary btn-sm ef-save" type="button">儲存</button>'
+      +   '<button class="btn btn-ghost btn-sm ef-cancel" type="button">取消</button>'
+      + '</div></div>';
+    li.querySelector('.ef-cancel').addEventListener('click', function() { renderAdmin(); });
+    li.querySelector('.ef-save').addEventListener('click', function() {
+      var friend = li.querySelector('.ef-friend').value.trim();
+      if (!friend) { setAdminStatus('好友姓名不可空白', 'err'); return; }
+      adminApi('/api/admin/referral', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id:      r.id,
+          friend:  friend,
+          contact: li.querySelector('.ef-contact').value.trim(),
+          service: li.querySelector('.ef-service').value.trim(),
+          message: li.querySelector('.ef-message').value.trim()
+        })
+      }, '已更新推薦紀錄');
+    });
+  }
 
   function renderAdmin() {
     var adminPw = '';
@@ -1325,6 +1523,10 @@ function balanceOf(u) {
                   var meta = [r.service, r.contact, r.date].filter(Boolean).map(escHtml).join('・');
                   return '<li><span class="rf-name">' + escHtml(r.friend) + '</span>'
                     + (meta ? '<span class="rf-meta">' + meta + '</span>' : '')
+                    + '<span class="admin-row-actions">'
+                    +   '<button class="icon-btn ref-edit" type="button">編輯</button>'
+                    +   '<button class="icon-btn danger ref-del" type="button">刪除</button>'
+                    + '</span>'
                     + (r.message ? '<span class="admin-ref-msg">「' + escHtml(r.message) + '」</span>' : '')
                     + '</li>';
                 }).join('')
@@ -1335,7 +1537,8 @@ function balanceOf(u) {
             var grant = t.type === 'grant';
             return '<li class="' + (grant ? 'lg-grant' : 'lg-redeem') + '"><span class="lg-amt">'
               + (grant ? '+' : '−') + t.amount.toLocaleString() + ' 點</span><span class="rf-meta">'
-              + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span></li>';
+              + escHtml(t.note || (grant ? '發放' : '兌換')) + '・' + t.date + '</span>'
+              + '<button class="icon-btn danger lg-del" type="button">刪除</button></li>';
           }).join('');
           var card = document.createElement('div');
           card.className = 'admin-card';
@@ -1355,6 +1558,24 @@ function balanceOf(u) {
           var noteEl   = card.querySelector('.admin-note');
           card.querySelector('.admin-grant').addEventListener('click', function() { adminAdjust(uid, u.name, bal, 'grant',  amountEl, noteEl); });
           card.querySelector('.admin-redeem').addEventListener('click', function() { adminAdjust(uid, u.name, bal, 'redeem', amountEl, noteEl); });
+          card.querySelectorAll('.ref-edit').forEach(function(btn, i) {
+            btn.addEventListener('click', function() { openRefEdit(btn.closest('li'), refs[i]); });
+          });
+          card.querySelectorAll('.ref-del').forEach(function(btn, i) {
+            btn.addEventListener('click', function() {
+              var r = refs[i];
+              if (!confirm('確定刪除「' + r.friend + '」這筆推薦紀錄？此操作無法復原。')) return;
+              adminApi('/api/admin/referral?id=' + r.id, { method: 'DELETE' }, '已刪除推薦紀錄');
+            });
+          });
+          card.querySelectorAll('.lg-del').forEach(function(btn, i) {
+            btn.addEventListener('click', function() {
+              var t = ledger[i];
+              var sign = t.type === 'grant' ? '+' : '−';
+              if (!confirm('確定刪除這筆「' + sign + t.amount.toLocaleString() + ' 點」的異動紀錄？刪除後會員餘額會立即重算。')) return;
+              adminApi('/api/admin/ledger?id=' + t.id, { method: 'DELETE' }, '已刪除異動紀錄');
+            });
+          });
           wrap.appendChild(card);
         });
       })
@@ -1422,11 +1643,42 @@ function balanceOf(u) {
 
   function setStatus(m, t) { statusEl.textContent = m; statusEl.className = 'form-status' + (t ? ' ' + t : ''); }
 
+  function buildSummary() {
+    return ['【合一療癒・轉介紹登記】',
+      '介紹人姓名：'   + (_userData ? _userData.name  : ''),
+      '介紹人Email：'  + (_userData ? _userData.email : ''),
+      '好友姓名：'     + form.friendName.value.trim(),
+      '好友聯絡：'     + (form.friendContact.value.trim() || '（未填）'),
+      '想了解的服務：' + (form.service.value || '（未選擇）'),
+      '備註：'         + (form.message.value.trim() || '（無）'),
+      '登記時間：'     + new Date().toLocaleString('zh-TW')].join('\n');
+  }
+
+  /* ── 登記成功提示框 ── */
+  var igOverlay = document.getElementById('igOverlay');
+  function openIgModal(summary) {
+    document.getElementById('igSummaryText').value = summary;
+    document.getElementById('igGo').href = IG_URL;
+    igOverlay.classList.add('show'); document.body.style.overflow = 'hidden';
+  }
+  function closeIgModal() { igOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+  document.getElementById('igClose').addEventListener('click', closeIgModal);
+  document.getElementById('igLater').addEventListener('click', closeIgModal);
+  document.getElementById('igCopyBtn').addEventListener('click', function() {
+    copyText(document.getElementById('igSummaryText').value, this, '複製內容');
+  });
+  document.getElementById('igGo').addEventListener('click', function() { setTimeout(closeIgModal, 300); });
+  igOverlay.addEventListener('click', function(e) { if (e.target === igOverlay) closeIgModal(); });
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     if (!_token) { openModal(); return; }
     if (form.website.value) { setStatus('已收到您的登記，謝謝您！', 'ok'); form.reset(); return; }
     if (!form.friendName.value.trim()) { setStatus('請填寫好友姓名', 'err'); form.friendName.focus(); return; }
+
+    /* 在點擊當下先複製（瀏覽器只允許使用者操作時寫入剪貼簿） */
+    var summary = buildSummary();
+    copyTextSilent(summary);
 
     submitBtn.disabled = true;
     submitBtn.textContent = '送出中…';
@@ -1449,6 +1701,7 @@ function balanceOf(u) {
         setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫並發放紅利。', 'ok');
         form.reset();
         done();
+        openIgModal(summary);
       })
       .catch(function() { setStatus('送出失敗，請檢查網路後再試一次。', 'err'); done(); });
   });
