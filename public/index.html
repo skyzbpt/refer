@@ -826,7 +826,7 @@ html{scrollbar-color:var(--aqua-soft) transparent;scrollbar-width:thin}
       <div class="form-foot">
         <button type="submit" class="btn btn-primary" id="submitBtn">送出登記</button>
         <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        <p class="privacy">送出後系統會自動複製您的登記內容並開啟 Instagram，直接貼上私訊給我們即可完成。</p>
+        <p class="privacy">送出後系統會自動複製您的登記內容，並提示您前往 Instagram 貼上私訊給我們。</p>
         <p class="privacy">您提供的資料僅用於本方案的聯繫與回饋發放，我們會妥善保管，不另作其他用途。</p>
       </div>
     </form>
@@ -1003,6 +1003,26 @@ html{scrollbar-color:var(--aqua-soft) transparent;scrollbar-width:thin}
         <p class="admin-status" id="adminStatus" role="status" aria-live="polite"></p>
         <div id="adminList"></div>
         <p class="member-note">輸入點數後按「發放」增加紅利、「兌換」扣除紅利（兌換不可超過餘額）。推薦紀錄可「編輯／刪除」，異動紀錄可「刪除」，刪除後餘額立即重算。資料儲存於雲端資料庫 (Cloudflare D1)；管理員需先以任一會員帳號登入，再輸入管理密碼。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 登記成功：前往 IG 提示 ===================== -->
+<div class="modal-overlay" id="igOverlay" role="dialog" aria-modal="true" aria-label="登記成功">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>登記成功 🎉</h3>
+      <p>登記內容已自動複製</p>
+      <button class="modal-close" id="igClose" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="redeem-desc">要現在前往 Instagram，把登記內容貼上私訊給我們嗎？若貼上時發現是空的，先按「複製內容」再過去。</p>
+      <textarea class="redeem-text" id="igSummaryText" readonly aria-label="登記內容"></textarea>
+      <div class="redeem-actions">
+        <a class="btn btn-primary btn-sm" id="igGo" href="#" target="_blank" rel="noopener">前往 Instagram</a>
+        <button class="btn btn-ghost btn-sm" id="igCopyBtn" type="button">複製內容</button>
+        <button class="btn btn-ghost btn-sm" id="igLater" type="button">稍後再說</button>
       </div>
     </div>
   </div>
@@ -1261,7 +1281,7 @@ function balanceOf(u) {
   overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
   memberOverlay.addEventListener('click', function(e) { if (e.target === memberOverlay) closeMember(); });
   adminOverlay.addEventListener('click', function(e) { if (e.target === adminOverlay) closeAdmin(); });
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); } });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeMember(); closeAdmin(); closeIgModal(); } });
 
   /* ── 分頁切換 ── */
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
@@ -1634,6 +1654,22 @@ function balanceOf(u) {
       '登記時間：'     + new Date().toLocaleString('zh-TW')].join('\n');
   }
 
+  /* ── 登記成功提示框 ── */
+  var igOverlay = document.getElementById('igOverlay');
+  function openIgModal(summary) {
+    document.getElementById('igSummaryText').value = summary;
+    document.getElementById('igGo').href = IG_URL;
+    igOverlay.classList.add('show'); document.body.style.overflow = 'hidden';
+  }
+  function closeIgModal() { igOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+  document.getElementById('igClose').addEventListener('click', closeIgModal);
+  document.getElementById('igLater').addEventListener('click', closeIgModal);
+  document.getElementById('igCopyBtn').addEventListener('click', function() {
+    copyText(document.getElementById('igSummaryText').value, this, '複製內容');
+  });
+  document.getElementById('igGo').addEventListener('click', function() { setTimeout(closeIgModal, 300); });
+  igOverlay.addEventListener('click', function(e) { if (e.target === igOverlay) closeIgModal(); });
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     if (!_token) { openModal(); return; }
@@ -1641,7 +1677,8 @@ function balanceOf(u) {
     if (!form.friendName.value.trim()) { setStatus('請填寫好友姓名', 'err'); form.friendName.focus(); return; }
 
     /* 在點擊當下先複製（瀏覽器只允許使用者操作時寫入剪貼簿） */
-    copyTextSilent(buildSummary());
+    var summary = buildSummary();
+    copyTextSilent(summary);
 
     submitBtn.disabled = true;
     submitBtn.textContent = '送出中…';
@@ -1661,10 +1698,10 @@ function balanceOf(u) {
       .then(function(r) { return r.json(); })
       .then(function(result) {
         if (result && result.error) { setStatus('送出失敗：' + result.error, 'err'); done(); return; }
-        setStatus('已收到您的登記！內容已自動複製，正在為您開啟 Instagram，貼上私訊給我們即可 💬', 'ok');
+        setStatus('已收到您的登記！好友完成首次諮詢後，我們會主動與您聯繫並發放紅利。', 'ok');
         form.reset();
         done();
-        setTimeout(function() { location.href = IG_URL; }, 1800);
+        openIgModal(summary);
       })
       .catch(function() { setStatus('送出失敗，請檢查網路後再試一次。', 'err'); done(); });
   });
